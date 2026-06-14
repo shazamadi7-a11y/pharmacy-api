@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clinical Sanctuary | Pharmy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f3f4f5",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-secondary-fixed-variant": "#284e37",
+                        "tertiary-container": "#bb535e",
+                        "surface-tint": "#006d40",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#8cf8b7",
+                        "surface-container": "#edeeef",
+                        "primary-fixed-dim": "#6fdb9c",
+                        "on-tertiary-fixed": "#40000e",
+                        "tertiary": "#9c3b47",
+                        "primary": "#006a3f",
+                        "on-tertiary-fixed-variant": "#802633",
+                        "outline": "#6e7a70",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "secondary": "#40674e",
+                        "on-secondary-container": "#466d54",
+                        "on-background": "#191c1d",
+                        "secondary-fixed": "#c2edcd",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#f6fff5",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed": "#002110",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#191c1d",
+                        "inverse-on-surface": "#f0f1f2",
+                        "outline-variant": "#bdcabe",
+                        "on-primary-fixed-variant": "#00522f",
+                        "secondary-fixed-dim": "#a6d0b2",
+                        "inverse-surface": "#2e3132",
+                        "background": "#f8f9fa",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#3e4a41",
+                        "surface": "#f8f9fa",
+                        "secondary-container": "#c2edcd",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#6fdb9c",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-primary-fixed": "#002110",
+                        "primary-container": "#008650",
+                        "on-tertiary-container": "#fffbff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "display": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0 8px 32px rgba(25, 28, 29, 0.04);
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(24px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar (Shared) -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm shadow-emerald-900/5 font-['Manrope'] antialiased tracking-tight">
+<div class="flex justify-between items-center px-6 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-extrabold tracking-tighter text-[#2D9F66] dark:text-[#38c47e]">Pharmy</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#2D9F66] font-bold border-b-2 border-[#2D9F66] pb-1" href="#">Shop</a>
+<a class="text-zinc-600 dark:text-zinc-400 font-medium hover:text-[#2D9F66] transition-colors" href="#">Categories</a>
+<a class="text-zinc-600 dark:text-zinc-400 font-medium hover:text-[#2D9F66] transition-colors" href="#">Wellness</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50 rounded-lg transition-all scale-95 active:scale-90 duration-200">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+<button class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50 rounded-lg transition-all scale-95 active:scale-90 duration-200">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Search Section -->
+<section class="bg-surface-container-low py-12 px-8">
+<div class="max-w-4xl mx-auto text-center space-y-6">
+<div class="relative group">
+<input class="w-full h-16 pl-14 pr-6 bg-surface-container-lowest border-none rounded-full text-lg shadow-sm focus:ring-4 focus:ring-primary-fixed transition-all duration-300 outline-none scale-100 focus:scale-[1.02]" id="main-search" placeholder="Search by scientific name (Paracetamol) or brand (Panadol)..." type="text"/>
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+</div>
+</div>
+</section>
+<!-- Hero Section -->
+<section class="relative h-[600px] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover brightness-75" data-alt="clean modern pharmacy interior with minimalist white shelving neat rows of medicines and warm ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSBmrrO62q8xvdXV1_5L4mCJQterqSWsekNALZdSNb1JnWVTnROKfxBKe08pMKTfRJzfX8cCxsePuz4ab8juN1sMsQMLhOyMnZjmpFDTrt1Og9GRGEZvXH-WqhqV7wpZyCw_xq6KzAZq7uI3OfPq2q0HOeh7BD1GGGicUw0Owwny3jz5HSuZ3qlWMyF05juqOKrfuDjzuCGPutjW0T3fT3ak6XxnQ2zigWNnH_sLYoTjdedMbx6qayIvdKuIs0xNAZgELySiU1AA"/>
+<div class="absolute inset-0 bg-gradient-to-r from-primary/60 to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-[1440px] mx-auto px-8 w-full">
+<div class="max-w-2xl space-y-8">
+<h1 class="text-6xl font-extrabold text-white leading-tight tracking-tight">
+                        Find Your <span class="text-primary-fixed">Medicine</span> Easily
+                    </h1>
+<p class="text-xl text-white/90 font-medium leading-relaxed max-w-lg">
+                        Access high-quality healthcare products with transparent pricing and professional pharmacist support.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Widgets: Health Tip & Order Update -->
+<section class="max-w-[1440px] mx-auto px-8 -mt-16 relative z-20">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="bg-surface-container-lowest p-8 rounded-xl editorial-shadow flex items-center gap-6 group hover:bg-surface-container transition-colors">
+<div class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-3xl" data-icon="lightbulb">lightbulb</span>
+</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Health Tip of the Day</h3>
+<p class="text-on-surface-variant text-sm">Stay hydrated! Drinking 2L of water daily helps maintain kidney function and healthy skin.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-8 rounded-xl editorial-shadow flex items-center gap-6 group hover:bg-surface-container transition-colors">
+<div class="w-16 h-16 bg-secondary-container rounded-full flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-3xl" data-icon="local_shipping">local_shipping</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-bold text-lg mb-1">Order #8821 Status</h3>
+<p class="text-on-surface-variant text-sm">Out for delivery. Estimated arrival: 15 mins</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Categories Section -->
+<section class="max-w-[1440px] mx-auto px-8 py-24">
+<h2 class="text-4xl font-extrabold mb-12 tracking-tight">Browse by Category</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+<a class="group bg-surface-container-low rounded-3xl p-10 flex flex-col items-center gap-4 transition-all hover:bg-primary-fixed/20 active:scale-95" href="/api/medicines?category=pain-relief">
+<div class="w-20 h-20 bg-surface-container-lowest rounded-full flex items-center justify-center transition-all group-hover:bg-primary group-hover:text-on-primary editorial-shadow">
+<span class="material-symbols-outlined text-4xl" data-icon="healing">healing</span>
+</div>
+<span class="font-bold text-lg">Pain Relief</span>
+</a>
+<a class="group bg-surface-container-low rounded-3xl p-10 flex flex-col items-center gap-4 transition-all hover:bg-primary-fixed/20 active:scale-95" href="/api/medicines?category=vitamins">
+<div class="w-20 h-20 bg-surface-container-lowest rounded-full flex items-center justify-center transition-all group-hover:bg-primary group-hover:text-on-primary editorial-shadow">
+<span class="material-symbols-outlined text-4xl" data-icon="pill">pill</span>
+</div>
+<span class="font-bold text-lg">Vitamins</span>
+</a>
+<a class="group bg-surface-container-low rounded-3xl p-10 flex flex-col items-center gap-4 transition-all hover:bg-primary-fixed/20 active:scale-95" href="/api/medicines?category=antibiotics">
+<div class="w-20 h-20 bg-surface-container-lowest rounded-full flex items-center justify-center transition-all group-hover:bg-primary group-hover:text-on-primary editorial-shadow">
+<span class="material-symbols-outlined text-4xl" data-icon="science">science</span>
+</div>
+<span class="font-bold text-lg">Antibiotics</span>
+</a>
+<a class="group bg-surface-container-low rounded-3xl p-10 flex flex-col items-center gap-4 transition-all hover:bg-primary-fixed/20 active:scale-95" href="/api/medicines?category=baby-care">
+<div class="w-20 h-20 bg-surface-container-lowest rounded-full flex items-center justify-center transition-all group-hover:bg-primary group-hover:text-on-primary editorial-shadow">
+<span class="material-symbols-outlined text-4xl" data-icon="child_care">child_care</span>
+</div>
+<span class="font-bold text-lg">Baby Care</span>
+</a>
+</div>
+</section>
+<!-- Offers Banner -->
+<section class="px-8 pb-24">
+<div class="max-w-[1440px] mx-auto bg-primary-container rounded-3xl p-12 overflow-hidden relative group">
+<div class="absolute right-0 top-0 h-full w-1/3 bg-white/5 skew-x-12 translate-x-12"></div>
+<div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="space-y-4 text-center md:text-left">
+<span class="px-4 py-1 bg-primary-fixed text-on-primary-fixed rounded-full text-xs font-bold tracking-widest uppercase">Special Offer</span>
+<h2 class="text-5xl font-black text-on-primary-container tracking-tighter">Save 20% on all vitamins</h2>
+<p class="text-on-primary-container/80 text-xl font-medium">Boost your immunity this winter with our premium range.</p>
+</div>
+<button class="px-10 py-5 bg-white text-primary font-bold rounded-full hover:bg-surface-container-lowest transition-all active:scale-95 shadow-xl">
+                        Shop Collection
+                    </button>
+</div>
+</div>
+</section>
+<!-- Popular Medicines -->
+<section class="max-w-[1440px] mx-auto px-8 pb-24">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="text-4xl font-extrabold tracking-tight">Popular Medicines</h2>
+<p class="text-on-surface-variant mt-2">Trusted solutions for your everyday needs</p>
+</div>
+<button class="text-primary font-bold hover:underline">View All</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="medicine-grid">
+<!-- Medicine Cards will be injected here -->
+<div class="bg-surface-container-lowest p-6 rounded-3xl editorial-shadow group hover:-translate-y-2 transition-all duration-300">
+<div class="bg-surface-container-high aspect-square rounded-2xl mb-6 overflow-hidden relative">
+<img class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" data-alt="isolated photograph of generic medication packaging with professional white clinical background and soft shadow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB77jo5w3kbGwL1NU78LGlIaCrcl5BeaMaUq55SRqIk9IJX41mwneLFXdfDb1rQ5RdgAAQzrpp8w9h0-SGA_J8LOWm0P_yM1qTQLk71AT4xw9NFa2sYWYZVGQDi44KLWATw-ZxO_cPJ1ALzh8rPeiu3WT-CbxS9VyljOsWQqMX0wAwSznsL060R8UjqzsHw0psqzAOY8a6h90Qey7DfN1ljvkOdXWgnPKlsStZ5oOkh-IiUMwa3MoRpDCBDWtOIMxUK_MaSx_7X3g"/>
+</div>
+<div class="space-y-2">
+<span class="text-xs font-bold text-primary tracking-widest uppercase">Pain Relief</span>
+<h3 class="font-bold text-xl">Panadol Advance</h3>
+<p class="text-2xl font-black text-primary">₪ 18.00</p>
+<button class="w-full mt-4 py-3 bg-surface-container-low hover:bg-primary-container hover:text-white font-bold rounded-full transition-all active:scale-95" onclick="addToCart('panadol-1')">
+                            Add to Cart
+                        </button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-3xl editorial-shadow group hover:-translate-y-2 transition-all duration-300">
+<div class="bg-surface-container-high aspect-square rounded-2xl mb-6 overflow-hidden relative">
+<img class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" data-alt="bottle of vitamins and minerals on a soft gray background with clinical lighting high resolution pharmacy product" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6Y2aJSUDmB__VR-pw2QZrUlG4B7y8-nSvoq37HLxLFHs_5-J86w4B_O2opt5FFFQgEIdfPLvM5VrW5aFZraCLu9Op8XLgSoHRVsOgZV7Ti14QSd0tJ5O-X3AW1XatW-AsVnD9Au8lXS32dIx7wC7JzRmEJxj8xeKagTZ5usrzGPDPn_mpldPmHs_Z7eqziWmB37IugnjeIU1N3jsXi5zSig6zu9lElTxf4AC8hJUlHFEZUmYrgui7aeC3jqyTAw28AYDVq1egEg"/>
+</div>
+<div class="space-y-2">
+<span class="text-xs font-bold text-primary tracking-widest uppercase">Vitamins</span>
+<h3 class="font-bold text-xl">Omega 3 Supplement</h3>
+<p class="text-2xl font-black text-primary">₪ 45.00</p>
+<button class="w-full mt-4 py-3 bg-surface-container-low hover:bg-primary-container hover:text-white font-bold rounded-full transition-all active:scale-95" onclick="addToCart('omega-3')">
+                            Add to Cart
+                        </button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-3xl editorial-shadow group hover:-translate-y-2 transition-all duration-300">
+<div class="bg-surface-container-high aspect-square rounded-2xl mb-6 overflow-hidden relative">
+<img class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" data-alt="medical cream tube and packaging on clean reflective surface with soft shadows and professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRxFtza7_GhAEyyye_QK_Ah5tPoCyc_xPPELgI0mS4C-3FQwnzcxF_wDXP6tRb9If174cQuNmtzbb4dZu98FpaviINvDS2fzgOmretxWooPTNDemKMu3_eXu-_mEAVG8aZg1fpv8RVQjVk55x0l8pnImPQWZ6ETSwQSqwzCwQheYoKiW0eMU76PSp7wQwFjUMPh5Bezu1Jsbw5-vr6z6Po2NCkTq7zPMi-aVoY6TYw2uJxT7-LcIe1Xiviv9w1IBji7NOuGE4XsA"/>
+</div>
+<div class="space-y-2">
+<span class="text-xs font-bold text-primary tracking-widest uppercase">Antibiotics</span>
+<h3 class="font-bold text-xl">Amoxicillin Tabs</h3>
+<p class="text-2xl font-black text-primary">₪ 32.50</p>
+<button class="w-full mt-4 py-3 bg-surface-container-low hover:bg-primary-container hover:text-white font-bold rounded-full transition-all active:scale-95" onclick="addToCart('amox-1')">
+                            Add to Cart
+                        </button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-3xl editorial-shadow group hover:-translate-y-2 transition-all duration-300">
+<div class="bg-surface-container-high aspect-square rounded-2xl mb-6 overflow-hidden relative">
+<img class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" data-alt="box of baby formula with gentle clean packaging on high-key medical product lighting background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA93XpWmzkOtmmpyJKm2avAoEu8bOSnaX8duwf9zNOWTiGLe_TLCESzT_s2frva5KTeAgK1isxSUrs30iWEVJdFeofy_B32jYWS3gIdgLJuLRmV9hme44DM9DY35nSWpmTTWkEv3B7ei2QOUHUSM_2Tlvhd_qYD-03994UKIuh668YjYQ1PwAN6LY3etmKyICUZQObI93HwqGnaALTdX3eBjRwK8XF-V0yw-VI-VvLz4diyO_StGP47yGsUXMv9iEHmNLURety6JA"/>
+</div>
+<div class="space-y-2">
+<span class="text-xs font-bold text-primary tracking-widest uppercase">Baby Care</span>
+<h3 class="font-bold text-xl">Baby Formula Gold</h3>
+<p class="text-2xl font-black text-primary">₪ 62.00</p>
+<button class="w-full mt-4 py-3 bg-surface-container-low hover:bg-primary-container hover:text-white font-bold rounded-full transition-all active:scale-95" onclick="addToCart('baby-1')">
+                            Add to Cart
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Shared) -->
+<footer class="bg-zinc-50 dark:bg-zinc-950 w-full py-12 font-['Inter'] text-sm">
+<div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="text-lg font-bold text-zinc-900 dark:text-white">Pharmy</div>
+<div class="flex gap-8">
+<a class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity hover:opacity-80" href="#">Terms</a>
+<a class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity hover:opacity-80" href="#">Privacy</a>
+<a class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity hover:opacity-80" href="#">Contact</a>
+</div>
+<div class="text-zinc-500 dark:text-zinc-400">
+© 2024 Pharmy. All rights reserved.
+</div>
+</div>
+</footer>
+<script>
+       // 1. الإعدادات الأساسية
+// 1. الإعدادات الأساسية
+const API_BASE_URL = 'http://127.0.0.1:8000';
+ // أضفنا /api هنا
+const AUTH_TOKEN = '123'; 
+
+// 2. وظيفة جلب الأقسام
+async function loadCategories() {
+    const categoryContainer = document.querySelector('section .grid'); // تأكد من دقة الكلاس هنا
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/categories`, {
+            headers: {
+                'Authorization': `Bearer ${AUTH_TOKEN}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        const result = await response.json();
+        console.log("Data from API:", result); // للتشخيص
+
+        if (result.success || result.data) { // إضافة فحص لـ result.data كاحتياط
+            const categories = result.data || result; // حسب هيكلة الـ API عندك
+            categoryContainer.innerHTML = ''; 
+            
+            categories.forEach(cat => {
+                categoryContainer.innerHTML += `
+                    <a href="category.html?id=${cat.id}" class="group ...">
+                        <!-- باقي كود HTML الخاص بك -->
+                        <span>${cat.name}</span>
+                    </a>
+                `;
+            });
+        }
+    } catch (error) {
+        console.error("خطأ في جلب الأقسام:", error);
+    }
+}
+
+   
+    </script>
+<script>
+        // 3. وظيفة جلب الأدوية (Medicines) من السيرفر
+async function loadMedicines() {
+    const medicineGrid = document.getElementById('medicine-grid');
+    try {
+        const response = await fetch(`${API_BASE_URL}/medicines`, {
+            headers: { 
+                'Authorization': `Bearer ${AUTH_TOKEN}`,
+                'Accept': 'application/json' 
+            }
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            medicineGrid.innerHTML = ''; // بنفضي الأدوية الوهمية
+            result.data.forEach(med => {
+                medicineGrid.innerHTML += `
+                    <div class="bg-surface-container-lowest p-6 rounded-3xl editorial-shadow group hover:-translate-y-2 transition-all duration-300">
+                        <div class="bg-surface-container-high aspect-square rounded-2xl mb-6 overflow-hidden relative">
+                            <img class="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110" 
+                                 src="${med.image || 'https://placeholder.com'}" alt="${med.brand_name}"/>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold text-primary tracking-widest uppercase">Medicine</span>
+                            <h3 class="font-bold text-xl">${med.brand_name}</h3>
+                            <p class="text-2xl font-black text-primary">₪ ${med.price}</p>
+                            <button class="w-full mt-4 py-3 bg-surface-container-low hover:bg-primary-container hover:text-white font-bold rounded-full transition-all active:scale-95" 
+                                    onclick="toggleStatus(${med.id})">
+                                تبديل الحالة (API)
+                            </button>
+                        </div>
+                    </div>`;
+            });
+        }
+    } catch (err) {
+        console.error('خطأ في جلب الأدوية:', err);
+    }
+}
+
+// 4. وظيفة الـ Toggle (تغيير حالة الدواء)
+async function toggleStatus(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/medicines/${id}/toggle`, {
+            method: 'PATCH',
+            headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        const res = await response.json();
+        if(res.success) {
+            alert('تم تغيير الحالة بنجاح!');
+            loadMedicines(); // تحديث القائمة
+        }
+    } catch (err) { alert('خطأ في التبديل'); }
+}
+
+// تشغيل الوظائف عند فتح الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+    loadCategories();
+    loadMedicines();
+});
+
+    </script></body></html>

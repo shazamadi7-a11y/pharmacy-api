@@ -1,0 +1,747 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Console\Commands;
+
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
+
+final class GenerateDocsPdfCommand extends Command
+{
+    protected $signature = 'docs:generate-pdf';
+
+    protected $description = 'Generate comprehensive PDF documentation for the Pharmacy API';
+
+    public function handle(): int
+    {
+        ini_set('memory_limit', '256M');
+
+        $this->info('Generating Pharmacy API documentation PDF...');
+
+        $endpoints = $this->buildEndpointsData();
+        $schema = $this->buildSchemaData();
+        $envVars = $this->buildEnvVarsData();
+
+        $data = [
+            'endpoints' => $endpoints,
+            'schema' => $schema,
+            'envVars' => $envVars,
+            'generatedAt' => now()->format('F j, Y'),
+            'version' => '1.0',
+        ];
+
+        $pdf = Pdf::loadView('docs.api-documentation', $data)
+            ->setPaper('a4', 'portrait')
+            ->setOption('isHtml5ParserEnabled', true)
+            ->setOption('isRemoteEnabled', false)
+            ->setOption('defaultFont', 'sans-serif');
+
+        $outputDir = base_path('docs');
+        if (! File::isDirectory($outputDir)) {
+            File::makeDirectory($outputDir, 0755, true);
+        }
+
+        $outputPath = $outputDir.'/Pharmacy_API_Documentation.pdf';
+        $pdf->save($outputPath);
+
+        $this->info('Documentation generated: '.$outputPath);
+
+        return self::SUCCESS;
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function buildEndpointsData(): array
+    {
+        return [
+            // === Authentication ===
+            [
+                'section' => 'Authentication',
+                'method' => 'POST',
+                'path' => '/api/v1/register',
+                'auth' => false,
+                'role' => 'any',
+                'description' => 'Register a new customer account',
+                'request' => '{"name":"John Doe","email":"john@example.com","password":"mypassword123","password_confirmation":"mypassword123","phone":"+970591234567"}',
+                'response' => '{"success":true,"message":"User registered successfully. Please check your email to verify your account.","data":{"user":{"id":1,"name":"John Doe","email":"john@example.com","role":"customer","phone":"+970591234567","phone_verified_at":null,"email_verified_at":null},"token":"1|abc123def456..."}}',
+                'status' => 201,
+            ],
+            [
+                'section' => 'Authentication',
+                'method' => 'POST',
+                'path' => '/api/v1/login',
+                'auth' => false,
+                'role' => 'any',
+                'description' => 'Login and receive auth token',
+                'request' => '{"email":"admin@pharmacy.com","password":"password"}',
+                'response' => '{"success":true,"message":"Login successful","data":{"user":{"id":1,"name":"Admin User","email":"admin@pharmacy.com","role":"admin"},"token":"2|xyz789..."}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Authentication',
+                'method' => 'POST',
+                'path' => '/api/v1/logout',
+                'auth' => true,
+                'role' => 'any',
+                'description' => 'Revoke the current access token',
+                'request' => null,
+                'response' => '{"success":true,"message":"Logged out successfully","data":null}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Authentication',
+                'method' => 'GET',
+                'path' => '/api/v1/me',
+                'auth' => true,
+                'role' => 'any',
+                'description' => 'Get the authenticated user profile',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"name":"Admin User","email":"admin@pharmacy.com","role":"admin","email_verified_at":"2026-03-08T12:00:00+00:00"}}',
+                'status' => 200,
+            ],
+            // === Email Verification ===
+            [
+                'section' => 'Email Verification',
+                'method' => 'POST',
+                'path' => '/api/v1/email/verify/{id}/{hash}',
+                'auth' => true,
+                'role' => 'any',
+                'description' => 'Verify email address using signed link',
+                'request' => null,
+                'response' => '{"success":true,"message":"Email verified successfully","data":null}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Email Verification',
+                'method' => 'POST',
+                'path' => '/api/v1/email/resend',
+                'auth' => true,
+                'role' => 'any',
+                'description' => 'Resend verification email',
+                'request' => '{"email":"john@example.com"}',
+                'response' => '{"success":true,"message":"Verification link sent","data":null}',
+                'status' => 200,
+            ],
+            // === Password Reset ===
+            [
+                'section' => 'Password Reset',
+                'method' => 'POST',
+                'path' => '/api/v1/forgot-password',
+                'auth' => false,
+                'role' => 'any',
+                'description' => 'Request a password reset link',
+                'request' => '{"email":"john@example.com"}',
+                'response' => '{"success":true,"message":"Password reset link sent","data":null}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Password Reset',
+                'method' => 'POST',
+                'path' => '/api/v1/reset-password',
+                'auth' => false,
+                'role' => 'any',
+                'description' => 'Reset password with token',
+                'request' => '{"email":"john@example.com","token":"reset-token","password":"newpassword123","password_confirmation":"newpassword123"}',
+                'response' => '{"success":true,"message":"Password reset successfully","data":null}',
+                'status' => 200,
+            ],
+            // === Categories ===
+            [
+                'section' => 'Categories',
+                'method' => 'GET',
+                'path' => '/api/v1/categories',
+                'auth' => false,
+                'role' => 'any',
+                'description' => 'List all categories with medicine counts',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":[{"id":1,"name":"Antibiotics","slug":"antibiotics","description":"Medications used to treat bacterial infections","image":"https://placehold.co/400x300","medicines_count":5}]}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Categories',
+                'method' => 'GET',
+                'path' => '/api/v1/categories/{category}',
+                'auth' => false,
+                'role' => 'any',
+                'description' => 'Get a single category by ID',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"name":"Antibiotics","slug":"antibiotics","description":"Medications used to treat bacterial infections","image":null,"medicines_count":5}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Categories',
+                'method' => 'POST',
+                'path' => '/api/v1/categories',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Create a new category (supports image upload)',
+                'request' => '{"name":"Vitamins","description":"Essential vitamins and supplements"}',
+                'response' => '{"success":true,"message":"Resource created successfully","data":{"id":3,"name":"Vitamins","slug":"vitamins","description":"Essential vitamins and supplements","image":null,"medicines_count":0}}',
+                'status' => 201,
+            ],
+            [
+                'section' => 'Categories',
+                'method' => 'PUT',
+                'path' => '/api/v1/categories/{category}',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Update a category (new image replaces old)',
+                'request' => '{"name":"Updated Name","description":"Updated description"}',
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"name":"Updated Name","slug":"updated-name"}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Categories',
+                'method' => 'DELETE',
+                'path' => '/api/v1/categories/{category}',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Delete a category (cascades to medicines)',
+                'request' => null,
+                'response' => '{"success":true,"message":"Category deleted successfully","data":null}',
+                'status' => 200,
+            ],
+            // === Medicines ===
+            [
+                'section' => 'Medicines',
+                'method' => 'GET',
+                'path' => '/api/v1/medicines',
+                'auth' => false,
+                'role' => 'any',
+                'description' => 'List medicines with filtering, sorting, pagination',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"data":[{"id":1,"category_id":2,"brand_name":"Amoxicillin Pro","scientific_name":"amoxicillin trihydrate","dosage_form":"capsule","price":"15.50","stock_quantity":100,"is_available":true}],"meta":{"current_page":1,"last_page":5,"per_page":15,"total":72}}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Medicines',
+                'method' => 'GET',
+                'path' => '/api/v1/medicines/{medicine}',
+                'auth' => false,
+                'role' => 'any',
+                'description' => 'Get a single medicine with images',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"category_id":2,"brand_name":"Panadol Extra","scientific_name":"paracetamol","dosage_form":"tablet","price":"4.50","stock_quantity":200,"is_available":true,"images":[]}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Medicines',
+                'method' => 'POST',
+                'path' => '/api/v1/medicines',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Create a new medicine (supports image uploads)',
+                'request' => '{"category_id":1,"brand_name":"Augmentin","scientific_name":"amoxicillin clavulanate","dosage_form":"tablet","price":25.99,"stock_quantity":50,"expiry_date":"2027-08-15","requires_prescription":true,"is_available":true}',
+                'response' => '{"success":true,"message":"Resource created successfully","data":{"id":3,"brand_name":"Augmentin","price":"25.99","stock_quantity":50}}',
+                'status' => 201,
+            ],
+            [
+                'section' => 'Medicines',
+                'method' => 'PUT',
+                'path' => '/api/v1/medicines/{medicine}',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Update a medicine (new images are appended)',
+                'request' => '{"price":29.99,"stock_quantity":75}',
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"price":"29.99","stock_quantity":75}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Medicines',
+                'method' => 'DELETE',
+                'path' => '/api/v1/medicines/{medicine}',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Delete a medicine and its Cloudinary images',
+                'request' => null,
+                'response' => '{"success":true,"message":"Medicine deleted successfully","data":null}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Medicines',
+                'method' => 'PATCH',
+                'path' => '/api/v1/medicines/{medicine}/toggle',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Toggle medicine availability on/off',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"is_available":false}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Medicines',
+                'method' => 'DELETE',
+                'path' => '/api/v1/medicines/{medicine}/images/{image}',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Delete a single medicine image from Cloudinary',
+                'request' => null,
+                'response' => '{"success":true,"message":"Image deleted successfully","data":null}',
+                'status' => 200,
+            ],
+            // === Cart ===
+            [
+                'section' => 'Cart',
+                'method' => 'GET',
+                'path' => '/api/v1/cart',
+                'auth' => true,
+                'role' => 'customer',
+                'description' => "View the authenticated user's cart",
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"items":[{"id":1,"medicine_id":5,"quantity":2,"medicine":{"brand_name":"Panadol Extra","price":"4.50"},"subtotal":"9.00"}],"total":"9.00","items_count":1}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Cart',
+                'method' => 'POST',
+                'path' => '/api/v1/cart',
+                'auth' => true,
+                'role' => 'customer',
+                'description' => 'Add item to cart (replaces qty if exists)',
+                'request' => '{"medicine_id":5,"quantity":2}',
+                'response' => '{"success":true,"message":"Resource created successfully","data":{"id":1,"medicine_id":5,"quantity":2,"subtotal":"9.00"}}',
+                'status' => 201,
+            ],
+            [
+                'section' => 'Cart',
+                'method' => 'PUT',
+                'path' => '/api/v1/cart/{cartItem}',
+                'auth' => true,
+                'role' => 'customer',
+                'description' => 'Update cart item quantity',
+                'request' => '{"quantity":5}',
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"quantity":5,"subtotal":"22.50"}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Cart',
+                'method' => 'DELETE',
+                'path' => '/api/v1/cart/{cartItem}',
+                'auth' => true,
+                'role' => 'customer',
+                'description' => 'Remove a single item from cart',
+                'request' => null,
+                'response' => '{"success":true,"message":"Item removed from cart","data":null}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Cart',
+                'method' => 'DELETE',
+                'path' => '/api/v1/cart',
+                'auth' => true,
+                'role' => 'customer',
+                'description' => 'Clear the entire cart',
+                'request' => null,
+                'response' => '{"success":true,"message":"Cart cleared successfully","data":null}',
+                'status' => 200,
+            ],
+            // === Orders (Customer) ===
+            [
+                'section' => 'Orders',
+                'method' => 'POST',
+                'path' => '/api/v1/orders',
+                'auth' => true,
+                'role' => 'customer',
+                'description' => 'Place order from cart (deducts stock, clears cart)',
+                'request' => '{"notes":"Please deliver between 2-5 PM"}',
+                'response' => '{"success":true,"message":"Resource created successfully","data":{"id":1,"user_id":2,"status":"pending","total_price":"34.99","notes":"Please deliver between 2-5 PM","items":[{"id":1,"medicine_id":5,"brand_name":"Panadol Extra","quantity":2,"unit_price":"4.50","subtotal":"9.00"}]}}',
+                'status' => 201,
+            ],
+            [
+                'section' => 'Orders',
+                'method' => 'GET',
+                'path' => '/api/v1/orders',
+                'auth' => true,
+                'role' => 'customer',
+                'description' => 'List my orders (paginated, newest first)',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"data":[{"id":3,"status":"confirmed","total_price":"34.99","items":[]}],"meta":{"current_page":1,"per_page":15,"total":1}}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Orders',
+                'method' => 'GET',
+                'path' => '/api/v1/orders/{order}',
+                'auth' => true,
+                'role' => 'customer',
+                'description' => 'View a single order (own orders only)',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"status":"pending","total_price":"34.99","items":[{"medicine_id":5,"brand_name":"Panadol Extra","quantity":2,"unit_price":"4.50","subtotal":"9.00"}]}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Orders',
+                'method' => 'GET',
+                'path' => '/api/v1/orders/{order}/receipt',
+                'auth' => true,
+                'role' => 'customer',
+                'description' => 'Download PDF receipt for own order',
+                'request' => null,
+                'response' => 'PDF file download (application/pdf)',
+                'status' => 200,
+            ],
+            // === Orders (Admin) ===
+            [
+                'section' => 'Orders (Admin)',
+                'method' => 'GET',
+                'path' => '/api/v1/admin/orders',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'List all orders from all users',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"data":[{"id":1,"user_id":2,"status":"pending","total_price":"34.99"}],"meta":{"current_page":1,"per_page":15,"total":6}}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Orders (Admin)',
+                'method' => 'GET',
+                'path' => '/api/v1/admin/orders/{order}',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'View any order detail',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"user_id":2,"status":"pending","total_price":"34.99","items":[]}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Orders (Admin)',
+                'method' => 'PATCH',
+                'path' => '/api/v1/admin/orders/{order}/confirm',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Confirm a pending order',
+                'request' => '{"admin_notes":"Approved. Will be ready for pickup tomorrow."}',
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"status":"confirmed","admin_notes":"Approved. Will be ready for pickup tomorrow."}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Orders (Admin)',
+                'method' => 'PATCH',
+                'path' => '/api/v1/admin/orders/{order}/reject',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Reject a pending order (restores stock)',
+                'request' => '{"admin_notes":"Prescription required but not provided."}',
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"status":"rejected","admin_notes":"Prescription required but not provided."}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Orders (Admin)',
+                'method' => 'PATCH',
+                'path' => '/api/v1/admin/orders/{order}/complete',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Complete a confirmed order',
+                'request' => '{"admin_notes":"Delivered successfully."}',
+                'response' => '{"success":true,"message":"Success","data":{"id":1,"status":"completed","admin_notes":"Delivered successfully."}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Orders (Admin)',
+                'method' => 'GET',
+                'path' => '/api/v1/admin/orders/{order}/receipt',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Download PDF receipt for any order',
+                'request' => null,
+                'response' => 'PDF file download (application/pdf)',
+                'status' => 200,
+            ],
+            // === OTP Verification ===
+            [
+                'section' => 'OTP Verification',
+                'method' => 'POST',
+                'path' => '/api/v1/otp/send',
+                'auth' => true,
+                'role' => 'any',
+                'description' => "Send 6-digit OTP to user's phone",
+                'request' => null,
+                'response' => '{"success":true,"message":"OTP code sent successfully","data":null}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'OTP Verification',
+                'method' => 'POST',
+                'path' => '/api/v1/otp/verify',
+                'auth' => true,
+                'role' => 'any',
+                'description' => 'Verify OTP code for phone verification',
+                'request' => '{"code":"123456"}',
+                'response' => '{"success":true,"message":"Phone number verified successfully","data":{"id":1,"name":"John Doe","phone":"+970591234567","phone_verified_at":"2026-03-10T12:00:00+00:00"}}',
+                'status' => 200,
+            ],
+            // === Notifications ===
+            [
+                'section' => 'Notifications',
+                'method' => 'GET',
+                'path' => '/api/v1/notifications',
+                'auth' => true,
+                'role' => 'any',
+                'description' => 'List all notifications (paginated)',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"data":[{"id":"uuid","type":"OrderStatusChanged","data":{"message":"Your order #1 has been confirmed"},"read_at":null}]}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Notifications',
+                'method' => 'GET',
+                'path' => '/api/v1/notifications/unread',
+                'auth' => true,
+                'role' => 'any',
+                'description' => 'List unread notifications only',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"data":[]}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Notifications',
+                'method' => 'PATCH',
+                'path' => '/api/v1/notifications/{id}/read',
+                'auth' => true,
+                'role' => 'any',
+                'description' => 'Mark a single notification as read',
+                'request' => null,
+                'response' => '{"success":true,"message":"Notification marked as read","data":null}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Notifications',
+                'method' => 'PATCH',
+                'path' => '/api/v1/notifications/read-all',
+                'auth' => true,
+                'role' => 'any',
+                'description' => 'Mark all notifications as read',
+                'request' => null,
+                'response' => '{"success":true,"message":"All notifications marked as read","data":null}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Notifications',
+                'method' => 'GET',
+                'path' => '/api/v1/admin/notifications/low-stock',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'List low stock alert notifications',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"data":[{"id":"uuid","type":"LowStockAlert","data":{"medicine":"Augmentin","stock":3}}]}}',
+                'status' => 200,
+            ],
+            // === Reports ===
+            [
+                'section' => 'Reports',
+                'method' => 'GET',
+                'path' => '/api/v1/admin/reports/sales',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Sales report with date range filtering',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"period":{"from":"2026-03-01","to":"2026-03-10"},"total_orders":15,"total_revenue":"1250.00","top_medicines":[{"id":1,"brand_name":"Panadol Extra","total_sold":45,"total_revenue":"202.50"}]}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Reports',
+                'method' => 'GET',
+                'path' => '/api/v1/admin/reports/inventory',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Inventory report with stock levels',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":{"total_medicines":17,"out_of_stock":2,"low_stock":3,"medicines":[{"id":1,"brand_name":"Panadol","stock_quantity":0,"is_available":true}]}}',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Reports',
+                'method' => 'GET',
+                'path' => '/api/v1/admin/reports/frequently-out-of-stock',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Medicines frequently out of stock',
+                'request' => null,
+                'response' => '{"success":true,"message":"Success","data":[{"medicine_id":5,"out_of_stock_count":3,"medicine":{"id":5,"brand_name":"Augmentin","stock_quantity":0}}]}',
+                'status' => 200,
+            ],
+            // === Receipts ===
+            [
+                'section' => 'Receipts',
+                'method' => 'GET',
+                'path' => '/api/v1/orders/{order}/receipt',
+                'auth' => true,
+                'role' => 'customer',
+                'description' => 'Download PDF receipt (own order)',
+                'request' => null,
+                'response' => 'PDF file download (application/pdf)',
+                'status' => 200,
+            ],
+            [
+                'section' => 'Receipts',
+                'method' => 'GET',
+                'path' => '/api/v1/admin/orders/{order}/receipt',
+                'auth' => true,
+                'role' => 'admin',
+                'description' => 'Download PDF receipt (any order)',
+                'request' => null,
+                'response' => 'PDF file download (application/pdf)',
+                'status' => 200,
+            ],
+        ];
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function buildSchemaData(): array
+    {
+        return [
+            [
+                'table' => 'users',
+                'columns' => [
+                    ['name' => 'id', 'type' => 'bigint', 'constraints' => 'PK, auto-increment'],
+                    ['name' => 'name', 'type' => 'string', 'constraints' => 'required'],
+                    ['name' => 'email', 'type' => 'string', 'constraints' => 'unique'],
+                    ['name' => 'phone', 'type' => 'string', 'constraints' => 'nullable'],
+                    ['name' => 'phone_verified_at', 'type' => 'timestamp', 'constraints' => 'nullable'],
+                    ['name' => 'email_verified_at', 'type' => 'timestamp', 'constraints' => 'nullable'],
+                    ['name' => 'password', 'type' => 'string', 'constraints' => 'hashed'],
+                    ['name' => 'role', 'type' => 'enum', 'constraints' => 'customer | admin'],
+                    ['name' => 'remember_token', 'type' => 'string', 'constraints' => 'nullable'],
+                    ['name' => 'created_at / updated_at', 'type' => 'timestamps', 'constraints' => ''],
+                ],
+            ],
+            [
+                'table' => 'categories',
+                'columns' => [
+                    ['name' => 'id', 'type' => 'bigint', 'constraints' => 'PK, auto-increment'],
+                    ['name' => 'name', 'type' => 'string', 'constraints' => 'required'],
+                    ['name' => 'slug', 'type' => 'string', 'constraints' => 'unique, auto-generated'],
+                    ['name' => 'description', 'type' => 'text', 'constraints' => 'nullable'],
+                    ['name' => 'image', 'type' => 'string', 'constraints' => 'nullable, Cloudinary URL'],
+                    ['name' => 'created_at / updated_at', 'type' => 'timestamps', 'constraints' => ''],
+                ],
+            ],
+            [
+                'table' => 'medicines',
+                'columns' => [
+                    ['name' => 'id', 'type' => 'bigint', 'constraints' => 'PK, auto-increment'],
+                    ['name' => 'category_id', 'type' => 'FK', 'constraints' => 'references categories, cascade delete'],
+                    ['name' => 'brand_name', 'type' => 'string', 'constraints' => 'required'],
+                    ['name' => 'scientific_name', 'type' => 'string', 'constraints' => 'required'],
+                    ['name' => 'dosage_form', 'type' => 'string', 'constraints' => 'DosageForm enum'],
+                    ['name' => 'price', 'type' => 'decimal(10,2)', 'constraints' => 'min 0.01'],
+                    ['name' => 'stock_quantity', 'type' => 'integer', 'constraints' => 'default 0'],
+                    ['name' => 'expiry_date', 'type' => 'date', 'constraints' => 'nullable'],
+                    ['name' => 'requires_prescription', 'type' => 'boolean', 'constraints' => 'default false'],
+                    ['name' => 'is_available', 'type' => 'boolean', 'constraints' => 'default true'],
+                    ['name' => 'description', 'type' => 'text', 'constraints' => 'nullable'],
+                    ['name' => 'manufacturer', 'type' => 'string', 'constraints' => 'nullable'],
+                    ['name' => 'created_at / updated_at', 'type' => 'timestamps', 'constraints' => ''],
+                ],
+            ],
+            [
+                'table' => 'medicine_images',
+                'columns' => [
+                    ['name' => 'id', 'type' => 'bigint', 'constraints' => 'PK, auto-increment'],
+                    ['name' => 'medicine_id', 'type' => 'FK', 'constraints' => 'references medicines, cascade delete'],
+                    ['name' => 'image_path', 'type' => 'string', 'constraints' => 'Cloudinary URL'],
+                    ['name' => 'is_primary', 'type' => 'boolean', 'constraints' => 'default false'],
+                    ['name' => 'created_at / updated_at', 'type' => 'timestamps', 'constraints' => ''],
+                ],
+            ],
+            [
+                'table' => 'cart_items',
+                'columns' => [
+                    ['name' => 'id', 'type' => 'bigint', 'constraints' => 'PK, auto-increment'],
+                    ['name' => 'user_id', 'type' => 'FK', 'constraints' => 'references users, cascade delete'],
+                    ['name' => 'medicine_id', 'type' => 'FK', 'constraints' => 'references medicines, cascade delete'],
+                    ['name' => 'quantity', 'type' => 'unsignedInteger', 'constraints' => 'min 1'],
+                    ['name' => 'created_at / updated_at', 'type' => 'timestamps', 'constraints' => ''],
+                ],
+            ],
+            [
+                'table' => 'orders',
+                'columns' => [
+                    ['name' => 'id', 'type' => 'bigint', 'constraints' => 'PK, auto-increment'],
+                    ['name' => 'user_id', 'type' => 'FK', 'constraints' => 'references users, cascade delete'],
+                    ['name' => 'status', 'type' => 'enum', 'constraints' => 'pending | confirmed | rejected | completed'],
+                    ['name' => 'total_price', 'type' => 'decimal(10,2)', 'constraints' => 'snapshot at order time'],
+                    ['name' => 'notes', 'type' => 'text', 'constraints' => 'nullable, customer notes'],
+                    ['name' => 'admin_notes', 'type' => 'text', 'constraints' => 'nullable'],
+                    ['name' => 'created_at / updated_at', 'type' => 'timestamps', 'constraints' => ''],
+                ],
+            ],
+            [
+                'table' => 'order_items',
+                'columns' => [
+                    ['name' => 'id', 'type' => 'bigint', 'constraints' => 'PK, auto-increment'],
+                    ['name' => 'order_id', 'type' => 'FK', 'constraints' => 'references orders, cascade delete'],
+                    ['name' => 'medicine_id', 'type' => 'FK', 'constraints' => 'references medicines, restrict delete'],
+                    ['name' => 'quantity', 'type' => 'unsignedInteger', 'constraints' => ''],
+                    ['name' => 'unit_price', 'type' => 'decimal(10,2)', 'constraints' => 'price snapshot'],
+                    ['name' => 'created_at / updated_at', 'type' => 'timestamps', 'constraints' => ''],
+                ],
+            ],
+            [
+                'table' => 'otp_codes',
+                'columns' => [
+                    ['name' => 'id', 'type' => 'bigint', 'constraints' => 'PK, auto-increment'],
+                    ['name' => 'user_id', 'type' => 'FK', 'constraints' => 'references users, cascade delete'],
+                    ['name' => 'code', 'type' => 'string(6)', 'constraints' => '6-digit OTP'],
+                    ['name' => 'type', 'type' => 'string', 'constraints' => 'phone_verification'],
+                    ['name' => 'expires_at', 'type' => 'timestamp', 'constraints' => '10 min from creation'],
+                    ['name' => 'verified_at', 'type' => 'timestamp', 'constraints' => 'nullable'],
+                    ['name' => 'created_at / updated_at', 'type' => 'timestamps', 'constraints' => ''],
+                ],
+            ],
+            [
+                'table' => 'notifications',
+                'columns' => [
+                    ['name' => 'id', 'type' => 'uuid', 'constraints' => 'PK'],
+                    ['name' => 'type', 'type' => 'string', 'constraints' => 'Notification class'],
+                    ['name' => 'notifiable_type', 'type' => 'string', 'constraints' => 'polymorphic'],
+                    ['name' => 'notifiable_id', 'type' => 'bigint', 'constraints' => 'polymorphic'],
+                    ['name' => 'data', 'type' => 'text (JSON)', 'constraints' => 'notification payload'],
+                    ['name' => 'read_at', 'type' => 'timestamp', 'constraints' => 'nullable'],
+                    ['name' => 'created_at / updated_at', 'type' => 'timestamps', 'constraints' => ''],
+                ],
+            ],
+            [
+                'table' => 'stock_logs',
+                'columns' => [
+                    ['name' => 'id', 'type' => 'bigint', 'constraints' => 'PK, auto-increment'],
+                    ['name' => 'medicine_id', 'type' => 'FK', 'constraints' => 'references medicines, cascade delete'],
+                    ['name' => 'order_id', 'type' => 'FK', 'constraints' => 'nullable, references orders'],
+                    ['name' => 'type', 'type' => 'string', 'constraints' => 'sale | restock'],
+                    ['name' => 'quantity_changed', 'type' => 'integer', 'constraints' => 'amount changed'],
+                    ['name' => 'stock_before', 'type' => 'integer', 'constraints' => ''],
+                    ['name' => 'stock_after', 'type' => 'integer', 'constraints' => ''],
+                    ['name' => 'created_at / updated_at', 'type' => 'timestamps', 'constraints' => ''],
+                ],
+            ],
+        ];
+    }
+
+    /** @return array<int, array<string, string>> */
+    private function buildEnvVarsData(): array
+    {
+        return [
+            ['name' => 'APP_NAME', 'value' => 'Pharmacy API', 'description' => 'Application name'],
+            ['name' => 'APP_ENV', 'value' => 'local', 'description' => 'Environment (local, production)'],
+            ['name' => 'APP_KEY', 'value' => 'base64:...', 'description' => 'Encryption key (auto-generated)'],
+            ['name' => 'APP_DEBUG', 'value' => 'true', 'description' => 'Debug mode (false in production)'],
+            ['name' => 'APP_URL', 'value' => 'http://localhost', 'description' => 'Application base URL'],
+            ['name' => 'DB_CONNECTION', 'value' => 'sqlite', 'description' => 'Database driver'],
+            ['name' => 'CLOUDINARY_CLOUD_NAME', 'value' => 'dn0r6dwxe', 'description' => 'Cloudinary cloud name for image storage'],
+            ['name' => 'CLOUDINARY_API_KEY', 'value' => '421443189959716', 'description' => 'Cloudinary API key'],
+            ['name' => 'CLOUDINARY_API_SECRET', 'value' => 'Js_R17UdxaVTdZcRKRCTNw9kJTI', 'description' => 'Cloudinary API secret'],
+            ['name' => 'CLOUDINARY_FOLDER', 'value' => 'pharmacy-app', 'description' => 'Cloudinary upload folder'],
+            ['name' => 'MAIL_MAILER', 'value' => 'log', 'description' => 'Mail driver (log for dev, smtp for prod)'],
+            ['name' => 'MAIL_FROM_ADDRESS', 'value' => 'hello@example.com', 'description' => 'Sender email address'],
+            ['name' => 'CACHE_STORE', 'value' => 'database', 'description' => 'Cache driver'],
+            ['name' => 'QUEUE_CONNECTION', 'value' => 'database', 'description' => 'Queue driver'],
+            ['name' => 'SESSION_DRIVER', 'value' => 'database', 'description' => 'Session driver'],
+            ['name' => 'LOW_STOCK_THRESHOLD', 'value' => '10', 'description' => 'Stock level that triggers low-stock alerts'],
+            ['name' => 'BCRYPT_ROUNDS', 'value' => '12', 'description' => 'Password hashing cost factor'],
+            ['name' => 'TWILIO_ACCOUNT_SID', 'value' => '', 'description' => 'Twilio account SID for SMS OTP delivery'],
+            ['name' => 'TWILIO_AUTH_TOKEN', 'value' => '', 'description' => 'Twilio auth token'],
+            ['name' => 'TWILIO_VERIFY_SID', 'value' => '', 'description' => 'Twilio Verify service SID for OTP'],
+        ];
+    }
+}
