@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Orders Management | Pharmy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "on-tertiary-fixed-variant": "#802633",
+        "on-primary-fixed-variant": "#00522f",
+        "secondary-fixed-dim": "#b7c8e1",
+        "on-surface": "#191c1e",
+        "on-tertiary-container": "#fffbff",
+        "inverse-primary": "#6fdb9c",
+        "surface-container-highest": "#e0e3e5",
+        "primary-container": "#008650",
+        "tertiary": "#9c3b47",
+        "on-error-container": "#93000a",
+        "inverse-surface": "#2d3133",
+        "on-background": "#191c1e",
+        "surface-variant": "#e0e3e5",
+        "clinical-white": "#FFFFFF",
+        "outline": "#6e7a70",
+        "primary-fixed": "#8cf8b7",
+        "primary": "#006a3f",
+        "on-tertiary-fixed": "#40000e",
+        "error": "#ba1a1a",
+        "slate-border": "#E2E8F0",
+        "error-red": "#E11D48",
+        "on-error": "#ffffff",
+        "primary-fixed-dim": "#6fdb9c",
+        "background": "#f7f9fb",
+        "secondary-fixed": "#d3e4fe",
+        "on-tertiary": "#ffffff",
+        "surface-dim": "#d8dadc",
+        "on-secondary-fixed": "#0b1c30",
+        "on-primary": "#ffffff",
+        "on-primary-fixed": "#002110",
+        "surface-container-high": "#e6e8ea",
+        "surface-container": "#eceef0",
+        "outline-variant": "#bdcabe",
+        "on-secondary-container": "#54647a",
+        "inverse-on-surface": "#eff1f3",
+        "on-primary-container": "#f6fff5",
+        "surface-tint": "#006d40",
+        "surface-bright": "#f7f9fb",
+        "surface": "#f7f9fb",
+        "on-surface-variant": "#3e4a41",
+        "tertiary-fixed": "#ffdadb",
+        "secondary": "#505f76",
+        "tertiary-container": "#bb535e",
+        "tertiary-fixed-dim": "#ffb2b7",
+        "success-low-light": "#DCF2E7",
+        "secondary-container": "#d0e1fb",
+        "error-container": "#ffdad6",
+        "surface-container-low": "#f2f4f6",
+        "on-secondary": "#ffffff",
+        "surface-container-lowest": "#ffffff",
+        "slate-text-dark": "#1E293B",
+        "on-secondary-fixed-variant": "#38485d"
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  body { font-family: 'Manrope', sans-serif; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .order-row { transition: background 0.15s; }
+  .order-row:hover { background-color: #f8fafc; }
+
+  /* Modal animation */
+  .modal-backdrop { animation: fadeIn 0.2s ease; }
+  .modal-card { animation: slideUp 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(24px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+  /* Status badges */
+  .badge-pending   { background:#fef3c7; color:#92400e; }
+  .badge-confirmed { background:#dbeafe; color:#1e40af; }
+  .badge-completed { background:#d1fae5; color:#065f46; }
+  .badge-rejected  { background:#fee2e2; color:#991b1b; }
+
+  /* Action buttons in modal */
+  .action-btn { transition: all 0.15s; }
+  .action-btn:hover { transform: translateY(-1px); }
+  .action-btn:active { transform: translateY(0); }
+
+  /* Toast */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    padding: 14px 22px; border-radius: 14px;
+    font-weight: 600; font-size: 14px;
+    display: flex; align-items: center; gap: 10px;
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none; min-width: 260px;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.success { background: #065f46; color: #fff; }
+  #toast.error   { background: #991b1b; color: #fff; }
+</style>
+</head>
+<body class="bg-background text-on-surface">
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="fixed left-0 top-0 h-screen w-[260px] border-r border-slate-border bg-clinical-white shadow-[4px_0_12px_rgba(0,0,0,0.04)] flex flex-col z-50">
+    <div class="px-6 py-8">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-clinical-white text-2xl" style="font-variation-settings:'FILL' 1;">local_pharmacy</span>
+            </div>
+            <div>
+                <h1 class="font-bold text-primary text-lg">Pharmy</h1>
+                <p class="text-[10px] tracking-widest text-secondary uppercase">Pharmacy Management</p>
+            </div>
+        </div>
+    </div>
+    <nav class="flex-1 px-4 space-y-1">
+        <a class="flex items-center gap-3 px-4 py-3 border-l-4 border-primary bg-success-low-light text-primary font-bold rounded-r-lg" href="admain-dashboard.html">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-medicin.html">
+            <span class="material-symbols-outlined">medication</span><span>Medicines</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-orders.html">
+            <span class="material-symbols-outlined">receipt_long</span><span>Orders</span>
+        </a>
+        <!--
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+            <span class="material-symbols-outlined">notifications</span><span>Notifications</span>
+        </a>-->
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admin-profile.html">
+            <span class="material-symbols-outlined">person</span><span>Profile</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-catagores.html">
+            <span class="material-symbols-outlined">category</span><span>Categories</span>
+        </a>
+    </nav>
+    <div class="p-4 border-t border-slate-border">
+        <a onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-error hover:bg-error-container transition-colors rounded-lg cursor-pointer">
+            <span class="material-symbols-outlined">logout</span><span>Logout</span>
+        </a>
+    </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="ml-[260px] min-h-screen">
+  <header class="sticky top-0 z-40 bg-surface/80 backdrop-blur-md px-8 py-4 flex items-center border-b border-slate-border">
+    <div class="flex-1 max-w-xl relative">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+      <input id="search-input"
+        class="w-full pl-10 pr-4 py-2.5 bg-clinical-white border border-slate-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+        placeholder="Search orders, customers, or medicines..."
+        type="text">
+    </div>
+  </header>
+
+  <div class="p-8 max-w-[1400px] mx-auto">
+    <div class="bg-clinical-white rounded-2xl shadow-sm border border-slate-border overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-surface-container-low border-b border-slate-border">
+            <tr>
+              <th class="px-6 py-4 text-xs font-bold text-secondary uppercase tracking-wider">Order ID</th>
+              <th class="px-6 py-4 text-xs font-bold text-secondary uppercase tracking-wider">Customer</th>
+              <th class="px-6 py-4 text-xs font-bold text-secondary uppercase tracking-wider">Total</th>
+              <th class="px-6 py-4 text-xs font-bold text-secondary uppercase tracking-wider">Status</th>
+              <th class="px-6 py-4 text-xs font-bold text-secondary uppercase tracking-wider">Date</th>
+              <th class="px-6 py-4 text-xs font-bold text-secondary uppercase tracking-wider text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orders-body" class="divide-y divide-slate-border"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ===== VIEW MODAL ===== -->
+<div id="view-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/50 modal-backdrop">
+  <div class="bg-white w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl modal-card mx-4">
+    <div class="px-8 py-6 border-b border-slate-border flex justify-between items-center bg-surface-container-low">
+      <h3 class="font-bold text-xl text-on-surface" id="modal-title"></h3>
+      <button onclick="closeModal('view-modal')" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors text-secondary">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="p-8" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- ===== ACTION MODAL ===== -->
+<div id="action-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/50 modal-backdrop">
+  <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl modal-card mx-4">
+    <div class="px-8 py-6 border-b border-slate-border flex justify-between items-center">
+      <h3 class="font-bold text-xl text-on-surface" id="action-modal-title">Update Order</h3>
+      <button onclick="closeModal('action-modal')" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors text-secondary">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="p-8 space-y-6">
+      <!-- Current status info -->
+      <div id="action-status-info" class="p-4 rounded-2xl bg-surface-container-low text-sm font-medium text-secondary"></div>
+
+      <!-- Admin notes -->
+      <div>
+        <label class="block text-sm font-semibold text-on-surface mb-2">Admin Notes <span class="text-secondary font-normal">(optional)</span></label>
+        <textarea id="action-notes"
+          class="w-full px-4 py-3 border border-slate-border rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none text-sm"
+          rows="3" placeholder="Add a note for this action..."></textarea>
+      </div>
+
+      <!-- Action buttons — rendered dynamically based on status -->
+      <div id="action-buttons" class="flex flex-col gap-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div id="toast">
+  <span id="toast-icon" class="material-symbols-outlined" style="font-size:20px;"></span>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+const API_BASE = "http://127.0.0.1:8000/api/v1";
+const TOKEN = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
+    const USER_ROLE = localStorage.getItem("role");
+if (!TOKEN ||(!USER_ROLE ||USER_ROLE.toLowerCase() !=="admin")) {
+    window.location.href = "/login.html";
+}
+let allOrders = [];
+let currentOrderId = null;
+
+// ─── Toast ───────────────────────────────────────────────
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toast-icon');
+  t.className = `show ${type}`;
+  icon.textContent = type === 'success' ? 'check_circle' : 'error';
+  document.getElementById('toast-msg').textContent = msg;
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => { t.className = t.className.replace('show', '').trim(); }, 3000);
+}
+
+// ─── Fetch Orders ─────────────────────────────────────────
+async function fetchAdminOrders() {
+  const tbody = document.getElementById('orders-body');
+  const token = localStorage.getItem("token");
+  tbody.innerHTML = `<tr><td colspan="6" class="text-center py-16 text-secondary">
+    <span class="material-symbols-outlined animate-spin" style="font-size:32px;">autorenew</span>
+  </td></tr>`;
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/orders`, {
+      headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+    });
+
+    if (res.status === 403) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-16 text-error">403 – Access Denied (Admin only)</td></tr>`;
+      return;
+    }
+
+    const result = await res.json();
+    allOrders = result.data?.data || result.data || [];
+    renderOrders(allOrders);
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-16 text-error">Failed to connect to server</td></tr>`;
+  }
+}
+
+// ─── Helpers ──────────────────────────────────────────────
+function getCustomerName(order) {
+  if (order.user?.name) return order.user.name;
+  if (order.notes) {
+    const m = order.notes.match(/Name:\s*([^\n]+)/i);
+    if (m) return m[1].trim();
+  }
+  return 'Unknown';
+}
+
+function badgeClass(status) {
+  const map = { pending: 'badge-pending', confirmed: 'badge-confirmed', completed: 'badge-completed', rejected: 'badge-rejected' };
+  return map[status] || 'badge-pending';
+}
+
+// ─── Render Table ─────────────────────────────────────────
+function renderOrders(orders) {
+  const tbody = document.getElementById('orders-body');
+  tbody.innerHTML = '';
+
+  if (!orders.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-16 text-secondary">No orders found</td></tr>`;
+    return;
+  }
+
+  orders.forEach(order => {
+    const name = getCustomerName(order);
+    const date = new Date(order.created_at).toLocaleDateString();
+    tbody.innerHTML += `
+      <tr class="order-row">
+        <td class="px-6 py-5 font-semibold">#${order.id}</td>
+        <td class="px-6 py-5">${name}</td>
+        <td class="px-6 py-5 font-semibold">${order.total_price} ₪</td>
+        <td class="px-6 py-5">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${badgeClass(order.status)}">
+            ${order.status}
+          </span>
+        </td>
+        <td class="px-6 py-5 text-secondary text-sm">${date}</td>
+        <td class="px-6 py-5 text-right">
+          <div class="flex justify-end gap-2">
+            <button onclick="viewOrder(${order.id})" title="View"
+              class="p-2 hover:bg-blue-50 text-blue-600 rounded-xl transition-colors">
+              <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+            </button>
+            <button onclick="openActionModal(${order.id})" title="Update Status"
+              class="p-2 hover:bg-amber-50 text-amber-600 rounded-xl transition-colors">
+              <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
+            </button>
+            <button onclick="deleteOrder(this, ${order.id})" title="Delete"
+              class="p-2 hover:bg-red-50 text-red-600 rounded-xl transition-colors">
+              <span class="material-symbols-outlined" style="font-size:20px;">delete</span>
+            </button>
+          </div>
+        </td>
+      </tr>`;
+  });
+}
+
+// ─── View Modal ───────────────────────────────────────────
+function viewOrder(id) {
+  const order = allOrders.find(o => o.id === id);
+  if (!order) return;
+
+  const name = getCustomerName(order);
+  const items = (order.items || []).map(item => `
+    <tr class="border-b border-slate-border last:border-0">
+      <td class="py-3 text-sm">${item.brand_name}</td>
+      <td class="py-3 text-sm text-center">${item.quantity}</td>
+      <td class="py-3 text-sm text-right font-semibold">${item.subtotal} ₪</td>
+    </tr>`).join('');
+
+  document.getElementById('modal-title').textContent = `Order #${order.id}`;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="space-y-6">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-surface-container-low rounded-2xl p-4">
+          <p class="text-xs text-secondary mb-1 uppercase tracking-wider">Customer</p>
+          <p class="font-semibold">${name}</p>
+        </div>
+        <div class="bg-surface-container-low rounded-2xl p-4">
+          <p class="text-xs text-secondary mb-1 uppercase tracking-wider">Status</p>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${badgeClass(order.status)}">${order.status}</span>
+        </div>
+        <div class="bg-surface-container-low rounded-2xl p-4">
+          <p class="text-xs text-secondary mb-1 uppercase tracking-wider">Total</p>
+          <p class="font-bold text-lg text-primary">${order.total_price} ₪</p>
+        </div>
+        <div class="bg-surface-container-low rounded-2xl p-4">
+          <p class="text-xs text-secondary mb-1 uppercase tracking-wider">Date</p>
+          <p class="font-semibold">${new Date(order.created_at).toLocaleDateString()}</p>
+        </div>
+      </div>
+      ${order.notes ? `<div class="bg-surface-container-low rounded-2xl p-4">
+        <p class="text-xs text-secondary mb-2 uppercase tracking-wider">Customer Notes</p>
+        <p class="text-sm">${order.notes}</p>
+      </div>` : ''}
+      ${order.admin_notes ? `<div class="bg-amber-50 rounded-2xl p-4">
+        <p class="text-xs text-amber-700 mb-2 uppercase tracking-wider font-bold">Admin Notes</p>
+        <p class="text-sm text-amber-900">${order.admin_notes}</p>
+      </div>` : ''}
+      ${items ? `<div>
+        <p class="text-xs text-secondary mb-3 uppercase tracking-wider font-bold">Order Items</p>
+        <table class="w-full">
+          <thead><tr class="border-b border-slate-border">
+            <th class="text-left text-xs text-secondary pb-2">Medicine</th>
+            <th class="text-center text-xs text-secondary pb-2">Qty</th>
+            <th class="text-right text-xs text-secondary pb-2">Subtotal</th>
+          </tr></thead>
+          <tbody>${items}</tbody>
+        </table>
+      </div>` : ''}
+    </div>`;
+
+  document.getElementById('view-modal').classList.remove('hidden');
+}
+
+// ─── Action Modal ─────────────────────────────────────────
+/*
+  Status Flow:
+  pending   → can: confirm | reject
+  confirmed → can: complete | reject
+  completed → no actions
+  rejected  → no actions
+*/
+function openActionModal(id) {
+  const order = allOrders.find(o => o.id === id);
+  if (!order) return;
+  currentOrderId = id;
+
+  const statusLabels = {
+    pending:   '🟡 Pending – waiting for confirmation',
+    confirmed: '🔵 Confirmed – ready to complete',
+    completed: '🟢 Completed',
+    rejected:  '🔴 Rejected'
+  };
+
+  document.getElementById('action-modal-title').textContent = `Update Order #${id}`;
+  document.getElementById('action-status-info').innerHTML =
+    `<span class="font-semibold">Current Status:</span> ${statusLabels[order.status] || order.status}`;
+  document.getElementById('action-notes').value = '';
+
+  const btns = document.getElementById('action-buttons');
+
+  if (order.status === 'pending') {
+    btns.innerHTML = `
+      <button onclick="updateOrderStatus('confirm')"
+        class="action-btn w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined" style="font-size:20px;">thumb_up</span> Confirm Order
+      </button>
+      <button onclick="updateOrderStatus('reject')"
+        class="action-btn w-full py-3.5 rounded-2xl bg-red-50 hover:bg-red-100 text-red-700 font-bold flex items-center justify-center gap-2 border border-red-200">
+        <span class="material-symbols-outlined" style="font-size:20px;">thumb_down</span> Reject Order
+      </button>`;
+
+  } else if (order.status === 'confirmed') {
+    btns.innerHTML = `
+      <button onclick="updateOrderStatus('complete')"
+        class="action-btn w-full py-3.5 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined" style="font-size:20px;">check_circle</span> Mark as Completed
+      </button>
+      <button onclick="updateOrderStatus('reject')"
+        class="action-btn w-full py-3.5 rounded-2xl bg-red-50 hover:bg-red-100 text-red-700 font-bold flex items-center justify-center gap-2 border border-red-200">
+        <span class="material-symbols-outlined" style="font-size:20px;">thumb_down</span> Reject Order
+      </button>`;
+
+  } else {
+    btns.innerHTML = `
+      <div class="text-center text-secondary py-4 text-sm">
+        No actions available for <strong>${order.status}</strong> orders.
+      </div>`;
+  }
+
+  document.getElementById('action-modal').classList.remove('hidden');
+}
+
+// ─── Update Status API Call ────────────────────────────────
+async function updateOrderStatus(action) {
+  const id = currentOrderId;
+  const notes = document.getElementById('action-notes').value.trim();
+  const token = localStorage.getItem("token");
+
+  // Map action → endpoint
+  const endpoints = {
+    confirm:  `${API_BASE}/admin/orders/${id}/confirm`,
+    complete: `${API_BASE}/admin/orders/${id}/complete`,
+    reject:   `${API_BASE}/admin/orders/${id}/reject`,
+  };
+
+  const endpoint = endpoints[action];
+  if (!endpoint) return;
+
+  // Disable buttons during request
+  document.getElementById('action-buttons').querySelectorAll('button').forEach(b => {
+    b.disabled = true;
+    b.classList.add('opacity-60', 'cursor-not-allowed');
+  });
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ admin_notes: notes || null })
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      // Update local state
+      const idx = allOrders.findIndex(o => o.id === id);
+      if (idx !== -1) {
+        allOrders[idx].status = result.data.status;
+        allOrders[idx].admin_notes = result.data.admin_notes;
+      }
+      renderOrders(allOrders);
+      closeModal('action-modal');
+      showToast(`✅ Order #${id} updated to "${result.data.status}"`, 'success');
+    } else {
+      showToast(result.message || 'Update failed', 'error');
+      // Re-enable buttons
+      document.getElementById('action-buttons').querySelectorAll('button').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('opacity-60', 'cursor-not-allowed');
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('Connection error', 'error');
+    document.getElementById('action-buttons').querySelectorAll('button').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('opacity-60', 'cursor-not-allowed');
+    });
+  }
+}
+
+// ─── Delete ───────────────────────────────────────────────
+function deleteOrder(btn, id) {
+  if (!confirm(`Delete Order #${id}?`)) return;
+  const row = btn.closest('tr');
+  row.style.transition = 'opacity 0.3s';
+  row.style.opacity = '0';
+  setTimeout(() => {
+    row.remove();
+    allOrders = allOrders.filter(o => o.id !== id);
+  }, 300);
+}
+
+// ─── Modals ───────────────────────────────────────────────
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+
+// Close on backdrop click
+['view-modal', 'action-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeModal(id);
+  });
+});
+
+// ─── Search ───────────────────────────────────────────────
+document.getElementById('search-input').addEventListener('input', (e) => {
+  const term = e.target.value.toLowerCase().trim();
+  if (!term) return renderOrders(allOrders);
+  const filtered = allOrders.filter(o =>
+    o.id.toString().includes(term) ||
+    getCustomerName(o).toLowerCase().includes(term)
+  );
+  renderOrders(filtered);
+});
+
+// ─── Logout ───────────────────────────────────────────────
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "../login.html";
+}
+
+// ─── Init ─────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', fetchAdminOrders);
+</script>
+</body>
+</html>

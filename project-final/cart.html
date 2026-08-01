@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Your Apothecary Cart | Clinical Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-primary-fixed": "#00201b",
+                "inverse-on-surface": "#eff1f3",
+                "primary-fixed-dim": "#7ad7c6",
+                "primary-fixed": "#97f3e2",
+                "surface": "#f7f9fb",
+                "inverse-surface": "#2d3133",
+                "surface-variant": "#e0e3e5",
+                "on-primary": "#ffffff",
+                "background": "#f7f9fb",
+                "secondary": "#206393",
+                "on-secondary-container": "#035584",
+                "on-primary-container": "#a1feec",
+                "on-error-container": "#93000a",
+                "error": "#ba1a1a",
+                "surface-bright": "#f7f9fb",
+                "on-surface": "#191c1e",
+                "surface-container": "#eceef0",
+                "tertiary-fixed-dim": "#ffb59f",
+                "secondary-fixed-dim": "#96ccff",
+                "primary-container": "#00796b",
+                "on-surface-variant": "#3e4946",
+                "on-tertiary-container": "#ffe8e2",
+                "surface-dim": "#d8dadc",
+                "on-primary-fixed-variant": "#005047",
+                "on-secondary-fixed-variant": "#004a75",
+                "on-error": "#ffffff",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-fixed": "#001d32",
+                "on-secondary": "#ffffff",
+                "primary": "#005e53",
+                "surface-container-low": "#f2f4f6",
+                "error-container": "#ffdad6",
+                "on-background": "#191c1e",
+                "secondary-fixed": "#cee5ff",
+                "outline-variant": "#bdc9c5",
+                "secondary-container": "#90c9ff",
+                "inverse-primary": "#7ad7c6",
+                "on-tertiary-fixed-variant": "#75331f",
+                "tertiary-container": "#a2563f",
+                "tertiary-fixed": "#ffdbd1",
+                "outline": "#6e7a76",
+                "surface-tint": "#006b5e",
+                "surface-container-high": "#e6e8ea",
+                "on-tertiary": "#ffffff",
+                "tertiary": "#843f29",
+                "surface-container-highest": "#e0e3e5",
+                "on-tertiary-fixed": "#3a0a00"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+        [v-cloak] { display: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm shadow-emerald-900/5 font-['Manrope'] antialiased tracking-tight">
+<div class="flex justify-between items-center px-6 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-extrabold tracking-tighter text-[#2D9F66] dark:text-[#38c47e]">Pharmy</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#2D9F66] font-bold border-b-2 border-[#2D9F66] pb-1" href="home.html">Shop</a>
+<a class="text-zinc-600 dark:text-zinc-400 font-medium hover:text-[#2D9F66] transition-colors" href="Category.html">Categories</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50 rounded-lg transition-all scale-95 active:scale-90 duration-200" onclick="window.location.href='cart.html'">
+
+    <span class="material-symbols-outlined">shopping_cart</span>
+
+    <!-- badge -->
+    <span id="cart-count"
+          class="absolute -top-1 -right-1 w-4 h-4 bg-primary text-[10px] text-white flex items-center justify-center rounded-full font-bold">
+        0
+    </span>
+
+</button>
+<button class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50 rounded-lg transition-all scale-95 active:scale-90 duration-200" onclick="window.location.href='profile.html'" >
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto min-h-screen">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+<header>
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Shopping Bag</h1>
+<p class="text-on-surface-variant font-body">Review your curated medical and wellness selections.</p>
+</header>
+<button class="flex items-center gap-2 px-6 py-3 bg-error/10 hover:bg-error/20 text-error font-bold rounded-xl transition-all duration-300 group" onclick="clearCart()">
+<span class="material-symbols-outlined text-xl group-hover:rotate-12 transition-transform">delete_sweep</span>
+                Clear Entire Bag
+            </button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+<!-- Cart Items Section -->
+<div class="lg:col-span-8">
+<div class="hidden py-20 text-center bg-surface-container-low rounded-2xl border-2 border-dashed border-outline-variant" id="empty-cart-message">
+<span class="material-symbols-outlined text-6xl text-on-surface-variant mb-4">shopping_basket</span>
+<h3 class="text-xl font-bold font-headline mb-2">Your bag is empty</h3>
+<p class="text-on-surface-variant mb-6">Looks like you haven't added anything yet.</p>
+</div>
+<div class="space-y-4" id="cart-container">
+<!-- Tonal Header -->
+<div class="grid grid-cols-12 gap-4 px-6 py-4 bg-surface-container-high rounded-t-xl mb-1">
+<div class="col-span-6 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Product</div>
+<div class="col-span-3 text-center text-xs font-bold uppercase tracking-widest text-on-surface-variant">Quantity</div>
+<div class="col-span-3 text-right text-xs font-bold uppercase tracking-widest text-on-surface-variant">Subtotal</div>
+</div>
+<div class="space-y-4" id="cart-items-list">
+<!-- Items will be injected here by JS -->
+</div>
+</div>
+</div>
+<!-- Order Summary Sidebar -->
+<div class="lg:col-span-4 sticky top-32">
+<div class="bg-white p-8 rounded-2xl shadow-[0_10px_40px_rgba(25,28,30,0.06)]">
+<h2 class="text-2xl font-bold font-headline text-on-surface mb-8">Order Summary</h2>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-body">Subtotal</span>
+<span class="font-bold text-on-surface" id="summary-subtotal">$0.00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-body">Estimated Shipping</span>
+<span class="font-bold text-primary">FREE</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-body">Tax Estimate (8%)</span>
+<span class="font-bold text-on-surface" id="summary-tax">$0.00</span>
+</div>
+</div>
+<div class="border-t border-surface-container py-6 mb-8">
+<div class="flex justify-between items-center">
+<span class="text-lg font-bold font-headline text-on-surface">Total</span>
+<span class="text-3xl font-extrabold font-headline text-primary" id="summary-total">$0.00</span>
+</div>
+</div>
+<div class="space-y-4">
+<button class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-xl text-center transition-all hover:shadow-[0_10px_30px_rgba(0,94,83,0.2)] active:scale-[0.98]" onclick="checkout()">
+                            Proceed to Checkout
+                        </button>
+<p class="text-[11px] text-center text-on-surface-variant font-body leading-relaxed">
+                            Secure transactions powered by Clinical Curator. Medical prescriptions will be verified by our staff during processing.
+                        </p>
+</div>
+<div class="mt-8 pt-8 border-t border-surface-container">
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary" data-icon="verified_user">verified_user</span>
+<div>
+<p class="text-xs font-bold text-on-surface">Guaranteed Quality</p>
+<p class="text-[10px]">Pharmacist inspected and approved.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-6 flex justify-center items-center gap-4 text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-lg">local_shipping</span>
+<span class="material-symbols-outlined text-lg">lock</span>
+<span class="material-symbols-outlined text-lg">medical_services</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+
+<script>
+const API_BASE = "http://127.0.0.1:8000/api/v1/cart";
+
+// 👇 مهم: حطي التوكن الحقيقي
+const TOKEN = localStorage.getItem("token");
+const USER_ROLE = localStorage.getItem("role");
+if (!TOKEN ||(USER_ROLE && USER_ROLE.toLowerCase()=="admin")) {
+    window.location.href = "login.html";
+}
+
+/* =========================
+   1. جلب السلة من API
+========================= */
+async function fetchCart() {
+    try {
+        const res = await fetch(API_BASE, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${TOKEN}`
+            }
+        });
+
+        const data = await res.json();
+           if (!data.success) {
+            console.error("API Error:", data.message);
+            return;
+        }
+
+        renderCart(data.data);
+
+    } catch (error) {
+        console.error("Error fetching cart:", error);
+    }
+
+}
+
+/* =========================
+   2. عرض السلة
+========================= */
+function renderCart(cartData) {
+    const items = cartData.items || [];
+    const container = document.getElementById("cart-items-list");
+    const emptyMsg = document.getElementById("empty-cart-message");
+
+    const badge = document.getElementById("cart-count");
+
+    // badge count
+    if(badge){
+    badge.innerText = cartData.items_count || 0;}
+
+    if (items.length === 0) {
+        emptyMsg.classList.remove("hidden");
+        container.innerHTML = "";
+        updateSummary(0);
+        return;
+    }
+
+    emptyMsg.classList.add("hidden");
+
+    let subtotal = 0;
+
+    container.innerHTML = items.map(item => {
+        const medicine = item.medicine;
+        const price = parseFloat(medicine.price);
+        const itemTotal = price * item.quantity;
+        subtotal += itemTotal;
+
+        return `
+        <div class="grid grid-cols-12 gap-4 items-center px-6 py-6 bg-surface-container-lowest rounded-xl">
+            
+            <!-- Product -->
+            <div class="col-span-6 flex items-center gap-6">
+                <div class="w-20 h-20 flex items-center justify-center">
+                    <img src="${medicine.images?.[0]?.image_path || ''}" class="object-contain max-h-full"/>
+                </div>
+                <div>
+                    <h3 class="font-bold">${medicine.brand_name}</h3>
+                    <p class="text-sm text-gray-500">${medicine.scientific_name}</p>
+
+                    <button onclick="deleteItem(${item.id})" class="text-red-500 text-xs mt-1">
+                        Remove
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="col-span-3 flex justify-center gap-2">
+                <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                <span>${item.quantity}</span>
+                <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+            </div>
+
+            <!-- Subtotal -->
+            <div class="col-span-3 text-right font-bold">
+                $${itemTotal.toFixed(2)}
+            </div>
+        </div>
+        `;
+    }).join("");
+
+    updateSummary(subtotal);
+    console.log(cartData);
+console.log(cartData.items);
+console.log(cartData.items_count);
+}
+
+/* =========================
+   3. تحديث الكمية (PUT)
+========================= */
+async function updateQuantity(cartItemId, quantity) {
+    if (quantity < 1) {
+        return deleteItem(cartItemId);
+    }
+
+    await fetch(`${API_BASE}/${cartItemId}`, {
+        method: "PUT",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${TOKEN}`
+        },
+        body: JSON.stringify({ quantity })
+    });
+
+    fetchCart();
+}
+
+/* =========================
+   4. حذف عنصر (DELETE)
+========================= */
+async function deleteItem(cartItemId) {
+    await fetch(`${API_BASE}/${cartItemId}`, {
+        method: "DELETE",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${TOKEN}`
+        }
+    });
+
+    fetchCart();
+}
+
+/* =========================
+   5. تفريغ السلة (CLEAR)
+========================= */
+async function clearCart() {
+    if (!confirm("Clear cart?")) return;
+
+    await fetch(API_BASE, {
+        method: "DELETE",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${TOKEN}`
+        }
+    });
+
+    fetchCart();
+}
+
+/* =========================
+   6. الحسابات
+========================= */
+function updateSummary(subtotal) {
+    const tax = subtotal * 0.08;
+    const total = subtotal + tax;
+
+    document.getElementById("summary-subtotal").innerText = `$${subtotal.toFixed(2)}`;
+    document.getElementById("summary-tax").innerText = `$${tax.toFixed(2)}`;
+    document.getElementById("summary-total").innerText = `$${total.toFixed(2)}`;
+}
+
+/* =========================
+   7. تشغيل أول ما الصفحة تفتح
+========================= */
+
+window.addEventListener("DOMContentLoaded", fetchCart);
+
+async function checkout() {
+    try {
+        const res = await fetch(API_BASE, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${TOKEN}`
+            }
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            alert("Failed to load cart");
+            return;
+        }
+
+        const items = data.data.items || [];
+
+        if (items.length === 0) {
+            alert("Your cart is empty");
+            return;
+        }
+
+        window.location.href = "chickeout.html";
+
+    } catch (error) {
+        console.error(error);
+        alert("Something went wrong");
+    }
+}
+</script>
+</body></html>

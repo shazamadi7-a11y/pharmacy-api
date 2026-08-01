@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Account | Pharmy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+</head>
+<body class="bg-[#f8f9ff] min-h-screen">
+
+<header class="fixed top-0 w-full bg-white shadow-sm z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div onclick="window.location.href='home.html'" class="text-2xl font-bold text-[#2D9F66] cursor-pointer">Pharmy</div>
+        <div class="flex items-center gap-6">
+            <a href="cart.html" class="p-2 hover:text-[#2D9F66]"><span class="material-symbols-outlined text-3xl">shopping_cart</span></a>
+            <button onclick="logout()" class="p-2 hover:text-red-600 transition-colors">
+                <span class="material-symbols-outlined text-3xl">logout</span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="pt-28 pb-20 px-6 max-w-7xl mx-auto">
+    <h1 class="text-4xl font-bold mb-2">My Account</h1>
+    <p class="text-gray-600 mb-10">Manage your profile and view your orders</p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Profile -->
+        <aside class="lg:col-span-4">
+            <div class="bg-white rounded-3xl p-8 shadow-sm" id="profile-card">
+                <div id="profile-content" class="text-center">
+                    <p class="py-12 text-gray-500">Loading...</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Order History -->
+        <section class="lg:col-span-8">
+            <div class="bg-white rounded-3xl shadow-sm overflow-hidden">
+                <div class="px-8 py-6 border-b flex justify-between items-center bg-gray-50">
+                    <h3 class="font-bold text-2xl">Order History</h3>
+                    <div class="flex gap-2 bg-gray-100 p-1 rounded-xl">
+                        <button onclick="filterOrders('all')" id="btn-all" 
+                                class="px-5 py-2 text-sm font-semibold rounded-xl bg-white shadow">All</button>
+                        <button onclick="filterOrders('pending')" id="btn-pending"
+                                class="px-5 py-2 text-sm font-semibold rounded-xl">Pending</button>
+                        <button onclick="filterOrders('completed')" id="btn-completed"
+                                class="px-5 py-2 text-sm font-semibold rounded-xl">Completed</button>
+                        <button onclick="filterOrders('cancelled')" id="btn-cancelled"
+                                class="px-5 py-2 text-sm font-semibold rounded-xl">Cancelled</button>
+                    </div>
+                </div>
+                <div class="p-8" id="orders-content">
+                    <p class="text-center py-12 text-gray-500">Loading orders...</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<script>
+    const TOKEN = localStorage.getItem("token");
+
+const USER_ROLE = localStorage.getItem("role");
+if (!TOKEN ||(USER_ROLE && USER_ROLE.toLowerCase()=="admin")) {
+    window.location.href = "login.html";
+}
+// ================== Fetch Profile ==================
+async function fetchProfile() {
+    const token = localStorage.getItem("token");
+    const content = document.getElementById('profile-content');
+
+    if (!token) return content.innerHTML = `<p class="text-red-500 py-12 text-center">Please login first</p>`;
+
+    try {
+        const res = await fetch("http://127.0.0.1:8000/api/v1/me", {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        });
+        const result = await res.json();
+        if (result.success) renderProfile(result.data);
+    } catch (e) { console.error(e); }
+}
+
+function renderProfile(user) {
+    const initial = (user.name || "U").charAt(0).toUpperCase();
+    document.getElementById('profile-content').innerHTML = `
+        <div class="flex flex-col items-center">
+            <div class="w-32 h-32 rounded-3xl bg-gradient-to-br from-[#2D9F66] to-emerald-700 flex items-center justify-center text-white text-6xl font-bold shadow-xl mb-6">
+                ${initial}
+            </div>
+            <h2 class="text-2xl font-bold">${user.name}</h2>
+            <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-5 py-1.5 rounded-full mt-3">PREMIUM MEMBER</span>
+        </div>
+
+        <div class="mt-10 space-y-6">
+            <div class="flex gap-4">
+                <span class="material-symbols-outlined text-[#2D9F66]">mail</span>
+                <div><p class="text-xs text-gray-500">EMAIL</p><p class="font-medium">${user.email}</p></div>
+            </div>
+            <div class="flex gap-4">
+                <span class="material-symbols-outlined text-[#2D9F66]">phone</span>
+                <div><p class="text-xs text-gray-500">PHONE</p><p class="font-medium">${user.phone || 'Not provided'}</p></div>
+            </div>
+        </div>
+    `;
+}
+
+// ================== Orders & Filtering ==================
+let allOrders = [];
+
+async function fetchOrders() {
+    const token = localStorage.getItem("token");
+    const content = document.getElementById('orders-content');
+
+    try {
+        const res = await fetch("http://127.0.0.1:8000/api/v1/orders", {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const result = await res.json();
+        allOrders = result.data?.data || result.data || [];
+
+        if (allOrders.length === 0) {
+            content.innerHTML = `<p class="text-gray-500 text-center py-20">No orders yet</p>`;
+            return;
+        }
+
+        renderOrders(allOrders);
+    } catch (e) {
+        content.innerHTML = `<p class="text-red-500 text-center py-20">Failed to load orders</p>`;
+    }
+}
+
+function getStatusBadge(status) {
+    if (status === 'completed') 
+        return 'bg-green-100 text-green-700';
+    if (status === 'rejected' || status === 'cancelled') 
+        return 'bg-red-100 text-red-700';
+    if (status === 'confirmed')
+        return 'bg-blue-100 text-blue-700';
+    return 'bg-amber-100 text-amber-700'; // pending
+}
+
+function getStatusLabel(status) {
+    if (status === 'rejected') return 'CANCELLED';
+    return status.toUpperCase();
+}
+
+function renderOrders(orders) {
+    const content = document.getElementById('orders-content');
+
+    if (orders.length === 0) {
+        content.innerHTML = `<p class="text-gray-500 text-center py-20">No orders found</p>`;
+        return;
+    }
+
+    let html = `<table class="w-full"><thead><tr class="text-xs uppercase text-gray-500 border-b">
+        <th class="text-left py-4">ORDER ID</th>
+        <th class="text-left py-4">DATE</th>
+        <th class="text-left py-4">ITEMS</th>
+        <th class="text-right py-4">TOTAL</th>
+        <th class="text-center py-4">STATUS</th>
+    </tr></thead><tbody>`;
+
+    orders.forEach(order => {
+        const itemsList = order.items ? order.items.map(i => i.brand_name || i.medicine?.brand_name).join(", ") : "—";
+
+        html += `
+            <tr class="border-b hover:bg-gray-50">
+                <td class="py-5 font-medium">#${order.id}</td>
+                <td class="py-5 text-gray-600">${new Date(order.created_at).toLocaleDateString('en-US')}</td>
+                <td class="py-5 text-gray-600 text-sm">${itemsList}</td>
+                <td class="py-5 text-right font-bold">${order.total_price} ₪</td>
+                <td class="py-5 text-center">
+                    <span class="px-5 py-1 text-xs font-bold rounded-full ${getStatusBadge(order.status)}">
+                        ${getStatusLabel(order.status)}
+                    </span>
+                </td>
+            </tr>`;
+    });
+
+    html += `</tbody></table>`;
+    content.innerHTML = html;
+}
+
+function filterOrders(status) {
+    // Reset all buttons
+    ['all', 'pending', 'completed', 'cancelled'].forEach(s => {
+        document.getElementById(`btn-${s}`).classList.remove('bg-white', 'shadow');
+    });
+    document.getElementById(`btn-${status}`).classList.add('bg-white', 'shadow');
+
+    if (status === 'all') {
+        renderOrders(allOrders);
+    } else if (status === 'cancelled') {
+        // عرض rejected و cancelled تحت تبويب Cancelled
+        const filtered = allOrders.filter(order => 
+            order.status === 'rejected' || order.status === 'cancelled'
+        );
+        renderOrders(filtered);
+    } else {
+        const filtered = allOrders.filter(order => order.status === status);
+        renderOrders(filtered);
+    }
+}
+
+async function logout() {
+    if (confirm("Are you sure you want to logout?")) {
+        localStorage.removeItem("token");
+        window.location.href = "login.html";
+    }
+}
+
+// Initialize
+window.addEventListener('DOMContentLoaded', () => {
+    fetchProfile();
+    fetchOrders();
+});
+</script>
+</body>
+</html>

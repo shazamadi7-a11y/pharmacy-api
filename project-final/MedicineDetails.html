@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pharmy - تفاصيل الدواء</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    
+    .product-image {
+        transition: transform 0.4s ease;
+    }
+    .product-image:hover {
+        transform: scale(1.04);
+    }
+</style>
+</head>
+<body class="bg-[#f8f9ff] text-[#0b1c30] min-h-screen">
+
+<!-- Navbar -->
+<header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <button onclick="window.history.back()" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                <span class="material-symbols-outlined text-3xl">arrow_back</span>
+            </button>
+            <div onclick="window.location.href='/'" class="text-2xl font-bold tracking-tighter text-[#2D9F66] cursor-pointer">Pharmy</div>
+        </div>
+        
+        <button id="cart-button" class="relative p-3 hover:bg-gray-100 rounded-xl transition-colors" onclick="window.location.href='cart.html'">
+            <span class="material-symbols-outlined text-3xl">shopping_cart</span>
+            <span id="cart-badge" class="absolute -top-1 -right-1 bg-[#2D9F66] text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+        </button>
+    </div>
+</header>
+
+<main class="pt-24 pb-20 max-w-7xl mx-auto px-6">
+    <div id="product-content" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <!-- يتم ملؤه ديناميكياً من API -->
+    </div>
+</main>
+
+<script>
+       const token = localStorage.getItem("token");
+    const USER_ROLE = localStorage.getItem("role");
+if (!token ||(USER_ROLE && USER_ROLE.toLowerCase()=="admin")) {
+    window.location.href = "login.html";
+}
+// ================== Get Medicine ID ==================
+const params = new URLSearchParams(window.location.search);
+const medicineId = params.get("id") || params.get("medicine");
+
+//let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+// ================== Fetch Medicine Details ==================
+async function fetchMedicineDetails() {
+    if (!medicineId) {
+        document.getElementById('product-content').innerHTML = `
+            <p class="col-span-12 text-center py-20 text-red-500 text-2xl">الدواء غير موجود</p>`;
+        return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/v1/medicines/${medicineId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        const result = await response.json();
+        const product = result.data;
+        console.log(product);
+
+        renderProductDetails(product);
+        updateCartBadge();
+
+    } catch (error) {
+        console.error(error);
+        document.getElementById('product-content').innerHTML = `
+            <p class="col-span-12 text-center py-20 text-red-500 text-xl">حدث خطأ أثناء تحميل تفاصيل الدواء</p>`;
+    }
+}
+
+// ================== Render Product ==================
+function renderProductDetails(product) {
+    const container = document.getElementById('product-content');
+    const mainImage = product.images?.[0]?.image_path || 'https://via.placeholder.com/600x600?text=No+Image';
+
+    container.innerHTML = `
+        <!-- Image Section -->
+        <div class="lg:col-span-7">
+            <div class="bg-white rounded-3xl overflow-hidden shadow-sm p-8 h-[520px] flex items-center justify-center">
+
+    ${
+        product.images?.[0]?.image_path
+        ?
+        `<img
+            src="${product.images[0].image_path}"
+            class="product-image w-full max-h-[520px] object-contain mx-auto"
+            alt="${product.brand_name}">
+        `
+        :
+        `
+        <div class="w-full h-full flex items-center justify-center bg-gray-100 rounded-2xl">
+            <span class="text-6xl font-bold text-gray-700 text-center px-6">
+                ${product.brand_name}
+            </span>
+        </div>
+        `
+    }
+
+</div>
+        </div>
+
+        <!-- Details Section -->
+        <div class="lg:col-span-5 space-y-8">
+            <div>
+                <h1 class="text-4xl font-bold tracking-tight leading-tight">${product.brand_name}</h1>
+                <p class="text-gray-600 text-lg mt-2">${product.scientific_name}</p>
+            </div>
+
+            <div class="flex items-center gap-5">
+                <span class="text-4xl font-bold text-[#2D9F66]">${product.price} ₪</span>
+                ${product.is_available ? 
+                    `<span class="px-6 py-2 bg-green-100 text-green-700 rounded-2xl text-sm font-medium">✅ In Stock</span>` : 
+                    `<span class="px-6 py-2 bg-red-100 text-red-700 rounded-2xl text-sm font-medium">❌Out of Stock </span>`
+                }
+            </div>
+
+            <p class="text-gray-600 leading-relaxed">${product.description || 'لا يوجد وصف متاح لهذا الدواء حالياً.'}</p>
+
+            <div class="grid grid-cols-2 gap-4 text-sm bg-white p-6 rounded-3xl">
+                <div><strong>dosage_form :</strong><br>${product.dosage_form}</div>
+                <div><strong>manufacturer :</strong><br>${product.manufacturer || 'غير محدد'}</div>
+                <div><strong>stock_quantity :</strong><br>${product.stock_quantity}</div>
+                <div><strong>expiry_date :</strong><br>${product.expiry_date}</div>
+                 <div><strong>scientific_name :</strong><br>${product.scientific_name}</div>
+            </div>
+
+            <button onclick="addToCart(${product.id}, '${product.brand_name.replace(/'/g, "\\'")}')" 
+                    class="w-full bg-[#2D9F66] hover:bg-[#24855a] text-white py-6 rounded-3xl text-xl font-semibold flex items-center justify-center gap-3 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-2xl">add_shopping_cart</span>
+                add to cart
+            </button>
+        </div>
+    `;
+}
+
+// ================== Cart Functions ==================
+async function addToCart(id, name) {
+
+    const token = localStorage.getItem("token");
+
+
+   if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+
+        const response = await fetch("http://127.0.0.1:8000/api/v1/cart", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+
+            body: JSON.stringify({
+                medicine_id: id,
+                quantity: 1
+            })
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+
+        if (!response.ok || !data.success) {
+            alert(data.message || "فشل إضافة المنتج");
+            return;
+        }
+
+        // تحديث البادج
+        updateCartBadge();
+
+        // Notification
+        const notif = document.createElement('div');
+
+        notif.className =
+            "fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#2D9F66] text-white px-8 py-4 rounded-3xl shadow-2xl z-[100]";
+
+        notif.innerHTML = `✅ تم إضافة <b>${name}</b> إلى السلة`;
+
+        document.body.appendChild(notif);
+
+        setTimeout(() => {
+            notif.remove();
+        }, 2500);
+
+    } catch (error) {
+
+        console.error("Add To Cart Error:", error);
+
+        alert("حدث خطأ أثناء الإضافة");
+
+    }
+}
+
+async function updateCartBadge() {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+
+        const response = await fetch("http://127.0.0.1:8000/api/v1/cart", {
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            document.getElementById("cart-badge").textContent =
+                data.data.items_count || 0;
+        }
+
+    } catch (error) {
+
+        console.error("Badge Error:", error);
+
+    }
+}
+
+// ================== Initialize ==================
+window.addEventListener('DOMContentLoaded', fetchMedicineDetails);
+</script>
+</body>
+</html>

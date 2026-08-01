@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign In | Atelier Pharmacy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#75331f",
+                        "inverse-surface": "#2d3131",
+                        "secondary-fixed-dim": "#b4cad6",
+                        "surface-container-high": "#e6e9e9",
+                        "inverse-primary": "#84d5c5",
+                        "on-tertiary-fixed": "#3a0a00",
+                        "surface-dim": "#d7dbdb",
+                        "primary-fixed-dim": "#84d5c5",
+                        "on-primary-fixed-variant": "#005046",
+                        "primary": "#005e52",
+                        "on-primary-container": "#aafdec",
+                        "secondary-fixed": "#cfe6f2",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#3e4946",
+                        "on-primary-fixed": "#00201b",
+                        "surface": "#f7fafa",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#a2563f",
+                        "surface-tint": "#046b5e",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#eef1f1",
+                        "on-secondary-fixed-variant": "#354a53",
+                        "surface-bright": "#f7fafa",
+                        "primary-fixed": "#a0f2e1",
+                        "secondary": "#4c616c",
+                        "surface-container-highest": "#e0e3e3",
+                        "outline-variant": "#bdc9c5",
+                        "on-surface": "#181c1d",
+                        "on-background": "#181c1d",
+                        "on-secondary-container": "#526772",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#ffe8e2",
+                        "secondary-container": "#cfe6f2",
+                        "tertiary-fixed-dim": "#ffb59f",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#ebeeee",
+                        "outline": "#6e7a76",
+                        "surface-variant": "#e0e3e3",
+                        "tertiary-fixed": "#ffdbd1",
+                        "surface-container-low": "#f1f4f4",
+                        "on-error": "#ffffff",
+                        "background": "#f7fafa",
+                        "tertiary": "#843f29",
+                        "primary-container": "#1f786a",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#071e27"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed-dim selection:text-on-primary-fixed overflow-hidden">
+<main class="min-h-screen flex flex-col md:flex-row">
+<!-- Left Side: Clinical Atelier Branding & Imagery -->
+<section class="relative hidden md:flex md:w-1/2 lg:w-[55%] flex-col justify-between p-12 overflow-hidden bg-primary-container">
+<!-- Background Image with Overlay -->
+<div class="absolute inset-0 z-0">
+<img alt="Pharmacist working in a modern clinical laboratory" class="w-full h-full object-cover mix-blend-overlay opacity-40" data-alt="professional pharmacist in a crisp white coat working in a minimalist high-end digital laboratory with soft emerald lighting and glass vials" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVx6qxM1PvJMEF8TqBYMkolAGEJpaJtjRRXbU6rAjmAK9OLxkaZJoDcFypYdP1Fj1-aEWz7cYVaoV-DnKAne66rNjVPbD-OwTg8V8uIPoAUqrwnMP9qdIUt6VF1Ovjf0kIrEwhhOFD54Cu6pc0PJ86SvLoRlhshA00K475HEGaFKknMBw3wJkpsGblKTlQ-avKItmpmilFjiVPbIf9-dc81b3YjTFcMFpNk9vA5X2ypG1-g6-Xxocc7_dubdf6ScaY2EvcsMMMqvS5"/>
+<div class="absolute inset-0 bg-gradient-to-br from-primary via-primary-container/80 to-transparent"></div>
+</div>
+<!-- Header Brand -->
+<div class="relative z-10 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-on-primary-container flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="medical_services">medical_services</span>
+</div>
+<h1 class="text-xl font-bold tracking-tighter text-on-primary-container">Atelier Pharmacy</h1>
+</div>
+<!-- Center Messaging -->
+<div class="relative z-10 mt-auto max-w-xl">
+<div class="inline-flex items-center px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md mb-6">
+<span class="w-2 h-2 rounded-full bg-primary-fixed animate-pulse mr-2"></span>
+<span class="text-xs font-semibold tracking-widest text-primary-fixed uppercase">Clinical Atelier</span>
+</div>
+<h2 class="text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">
+                    Bespoke healthcare, <br/>
+<span class="text-primary-fixed">digitally refined.</span>
+</h2>
+<p class="text-on-primary-container/80 text-lg leading-relaxed max-w-md">
+                    Access our premium pharmaceutical suite designed for the modern clinician. Precision in every refill, elegance in every interaction.
+                </p>
+</div>
+<!-- Footer Quote/Detail -->
+<div class="relative z-10 mt-20 pt-8 border-t border-white/10">
+<div class="flex items-center gap-4">
+<div class="flex -space-x-2">
+<img alt="Doctor profile" class="w-10 h-10 rounded-full border-2 border-primary" data-alt="close up of a professional female doctor smiling softly wearing medical scrubs and a stethoscope" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXL7qXhuQG9z1LAVbI_iR1z8DS5RzXebgCsXzK5qHB0-vMAZQIOlBX2ook412ZqsOZfXbbA0ZHH1WQ45e_dQUExSqx8Td-dYXrKIgihaPxtSRbW0XJdHFXHc5d23bWjoGkfMv1qkyNu_ZcWIRXywsg4wx_AIq1PXmsLvVEgmzWPC73sYtXJldz_vHPHAN6HmnxCqhl_LR4Kwq5IthHXN0PmnMXzCwoAciZk9BIq9-GNZYc-MLNggTiqVtDVdUYGv_zoT0y7dY47v7L"/>
+<img alt="Doctor profile" class="w-10 h-10 rounded-full border-2 border-primary" data-alt="portrait of a focused male healthcare professional in a clinical setting with warm natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj7wXnH-U5pNKbu9aufjPQuxWhefB01-01gZG0zKNh-ghIvMsHOBkDAsrQBzF65dbCTDv4_33nM6lKAJYE2QxRCMMHZbCA6wZsbR5hCKHYh2aiuzHx46kTPhy4I-OhUPWy8Pqd20ptfmPspQEKvoTH7f-yd1inh-g-ONMcFXl388bq128AsZH3cBQdXIC9-gYf99juN-3AshZr_PsgxShsPZjyLdG8Da6hle87nJ6sMb334ksecj5ZTi1xKljClo86p8KM5kYyfRv7"/>
+</div>
+<p class="text-sm text-on-primary-container/60 italic font-light">
+                        "Trusted by 10,000+ medical professionals nationwide."
+                    </p>
+</div>
+</div>
+</section>
+<!-- Right Side: Login Form -->
+<section class="flex-1 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-surface">
+<div class="w-full max-w-[420px] space-y-10">
+<!-- Mobile Branding (Visible only on small screens) -->
+<div class="md:hidden flex items-center justify-center gap-2 mb-12">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="medical_services">medical_services</span>
+<span class="text-2xl font-bold tracking-tighter text-primary">Atelier Pharmacy</span>
+</div>
+<!-- Form Header -->
+<header class="space-y-3">
+<h3 class="text-3xl font-bold tracking-tight text-on-surface">Welcome back</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                        Enter your credentials to access your pharmacy dashboard.
+                    </p>
+</header>
+<!-- Login Form -->
+<form class="space-y-6" id="login_form">
+<div class="space-y-5">
+<!-- Email Input -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant tracking-wide" for="login_email">Email Address</label>
+<div class="relative group">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline group-focus-within:text-primary transition-colors duration-200" data-icon="mail">mail</span>
+<input class="w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border-none rounded-lg shadow-sm ring-1 ring-outline-variant focus:ring-2 focus:ring-primary transition-all duration-300 placeholder:text-outline-variant outline-none" id="login_email" name="email" placeholder="name@clinical.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="text-sm font-semibold text-on-surface-variant tracking-wide" for="login_password">Password</label>
+<a class="text-xs font-medium text-primary hover:underline transition-all" href="forgot-password.html">Forgot password?</a>
+</div>
+<div class="relative group">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline group-focus-within:text-primary transition-colors duration-200" data-icon="lock">lock</span>
+<input class="w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border-none rounded-lg shadow-sm ring-1 ring-outline-variant focus:ring-2 focus:ring-primary transition-all duration-300 placeholder:text-outline-variant outline-none" id="login_password" name="password" placeholder="••••••••" required="" type="password"/>
+<button id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-outline transition-colors" type="button">
+    <span id="eyeIcon" class="material-symbols-outlined text-xl">visibility</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Remember Me -->
+
+<!-- Submit Button -->
+<button class="w-full bg-primary text-on-primary py-4 px-6 rounded-lg font-bold text-lg shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2" id="login_button" type="submit">
+<span>Sign In</span>
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<!-- Navigation Link -->
+<footer class="pt-6 border-t border-surface-container-high text-center">
+<p class="text-on-surface-variant font-medium">
+                        Don't have an account? 
+                        <a class="text-primary font-bold hover:underline ml-1 underline-offset-4 decoration-2" href="regestar.html">Sign Up</a>
+</p>
+</footer>
+<!-- Legal / Accessibility -->
+<div class="flex justify-center gap-6 pt-10">
+<a class="text-[10px] uppercase tracking-widest text-outline hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<span class="text-outline-variant">•</span>
+<a class="text-[10px] uppercase tracking-widest text-outline hover:text-primary transition-colors" href="#">Terms of Care</a>
+</div>
+</div>
+</section>
+</main>
+<script>
+
+const LOGIN_API_URL = 'http://127.0.0.1:8000/api/v1/login';
+
+document.getElementById('login_form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('login_email').value;
+    const password = document.getElementById('login_password').value;
+    const button = document.getElementById('login_button');
+    
+    // Loading state
+    button.disabled = true;
+    button.innerHTML = 'Loading...';
+
+    try {
+        const response = await fetch(LOGIN_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        // ✅ نجاح
+        if (response.status === 200 && data.success) {
+
+            // 🔐 تخزين التوكن
+            localStorage.setItem("token", data.data.token);
+
+            // (اختياري) تخزين اسم المستخدم
+            localStorage.setItem("user", JSON.stringify(data.data.user));
+                        const role = data.data.user.role;
+                        console.log("ROLE:", role);
+
+                localStorage.setItem("role", role);
+
+                if (role.toLowerCase() === "admin") {
+                    window.location.href = "admin/admain-dashboard.html";
+                } else {
+                    window.location.href = "home.html";
+                }
+
+        } 
+        
+        // ❌ بيانات غلط
+        else if (response.status === 401) {
+            alert("Email or password incorrect");
+        } 
+        
+        // ❌ Validation
+        else if (response.status === 422) {
+            let errors = Object.values(data.errors).flat().join('\n');
+            alert(errors);
+        } 
+        
+        else {
+            alert("Something went wrong");
+        }
+
+    } catch (error) {
+        console.error(error);
+        alert("Server error");
+    }
+
+    // رجع الزر
+    button.disabled = false;
+    button.innerHTML = '<span>Sign In</span>';
+});
+const passwordInput = document.getElementById('login_password');
+const togglePassword = document.getElementById('togglePassword');
+const eyeIcon = document.getElementById('eyeIcon');
+
+togglePassword.addEventListener('click', () => {
+    const isHidden = passwordInput.type === 'password';
+
+    passwordInput.type = isHidden ? 'text' : 'password';
+    eyeIcon.textContent = isHidden ? 'visibility_off' : 'visibility';
+});
+</script>
+</body></html>

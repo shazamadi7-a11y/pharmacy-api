@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order History - MedCare Pharmacy</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Manrope & Public Sans -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Public+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#d3e4fe",
+                    "primary": "#006c49",
+                    "on-primary-fixed-variant": "#005236",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-container": "#36393b",
+                    "primary-container": "#10b981",
+                    "error": "#ba1a1a",
+                    "surface": "#f8f9ff",
+                    "on-secondary": "#ffffff",
+                    "surface-variant": "#d3e4fe",
+                    "primary-fixed": "#6ffbbe",
+                    "on-secondary-container": "#fefcff",
+                    "surface-dim": "#cbdbf5",
+                    "on-secondary-fixed": "#001a42",
+                    "inverse-surface": "#213145",
+                    "primary-fixed-dim": "#4edea3",
+                    "on-background": "#0b1c30",
+                    "tertiary-container": "#a0a3a5",
+                    "tertiary-fixed": "#e0e3e5",
+                    "on-tertiary-fixed-variant": "#444749",
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#bbcabf",
+                    "secondary-container": "#2170e4",
+                    "on-secondary-fixed-variant": "#004395",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#4edea3",
+                    "outline": "#6c7a71",
+                    "secondary": "#0058be",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "tertiary": "#5c5f61",
+                    "surface-bright": "#f8f9ff",
+                    "on-primary-container": "#00422b",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-tertiary-fixed": "#191c1e",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#eff4ff",
+                    "surface-tint": "#006c49",
+                    "surface-container": "#e5eeff",
+                    "on-surface": "#0b1c30",
+                    "on-surface-variant": "#3c4a42",
+                    "on-primary-fixed": "#002113",
+                    "background": "#f8f9ff",
+                    "tertiary-fixed-dim": "#c4c7c9",
+                    "surface-container-high": "#dce9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "12px",
+                    "gutter": "24px",
+                    "xl": "64px",
+                    "margin": "32px",
+                    "xs": "4px",
+                    "md": "24px",
+                    "lg": "40px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "body-md": ["Manrope"],
+                    "body-lg": ["Manrope"],
+                    "headline-xl": ["Manrope"],
+                    "label-md": ["Public Sans"],
+                    "headline-lg": ["Manrope"],
+                    "label-sm": ["Public Sans"],
+                    "headline-md": ["Manrope"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-xl": ["40px", {"lineHeight": "52px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .modal-backdrop {
+            background-color: rgba(11, 28, 48, 0.4);
+            backdrop-filter: blur(4px);
+        }
+        .order-row:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim shadow-sm dark:shadow-none border-b border-outline-variant dark:border-outline docked full-width top-0 z-50 sticky">
+<div class="flex justify-between items-center px-gutter w-full max-w-[1200px] mx-auto h-16">
+<div class="flex items-center gap-base">
+<span class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed-dim">MedCare Pharmacy</span>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors px-3 py-2 rounded-lg" href="#">Pharmacy</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors px-3 py-2 rounded-lg" href="#">Prescriptions</a>
+<a class="text-primary dark:text-primary-fixed-dim font-bold border-b-2 border-primary font-label-md text-label-md px-3 py-2" href="#">Orders</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors px-3 py-2 rounded-lg" href="#">Profile</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button class="material-symbols-outlined text-primary p-2 hover:bg-surface-container-high rounded-full">notifications</button>
+<button class="material-symbols-outlined text-primary p-2 hover:bg-surface-container-high rounded-full">account_circle</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-[1200px] mx-auto px-gutter py-lg">
+<!-- Page Header -->
+<div class="mb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-2">Order History</h1>
+<p class="text-body-md text-on-surface-variant">Track, manage and review your pharmaceutical purchases.</p>
+</div>
+<div class="flex items-center gap-sm bg-surface-container-low p-2 rounded-xl border border-outline-variant">
+<span class="material-symbols-outlined text-primary ml-2">filter_list</span>
+<select class="bg-transparent border-none focus:ring-0 font-label-md text-on-surface cursor-pointer pr-8">
+<option>All Orders</option>
+<option>Last 30 Days</option>
+<option>2023 Orders</option>
+</select>
+</div>
+</div>
+<!-- Orders List Container -->
+<div class="space-y-md" id="orders-container">
+<!-- Loading State -->
+<div class="flex flex-col items-center justify-center py-xl" id="loading-spinner">
+<div class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+<p class="mt-4 font-label-md text-primary animate-pulse">Syncing your medical records...</p>
+</div>
+<!-- Error State (Hidden by default) -->
+<div class="hidden flex flex-col items-center justify-center py-xl bg-error-container/20 rounded-xl border border-error/20 p-lg text-center" id="error-message">
+<span class="material-symbols-outlined text-error text-5xl mb-md">error</span>
+<h3 class="font-headline-md text-error mb-2">Connection Issue</h3>
+<p class="text-body-md text-on-surface-variant max-w-md mx-auto mb-md">We couldn't retrieve your order history. This might be due to a server connection problem.</p>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-lg font-label-md hover:shadow-lg transition-all active:scale-95" onclick="window.location.reload()">Retry Sync</button>
+</div>
+<!-- Empty State (Hidden by default) -->
+<div class="hidden flex flex-col items-center justify-center py-xl text-center" id="empty-state">
+<div class="w-24 h-24 bg-surface-container rounded-full flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-tertiary-container text-5xl">receipt_long</span>
+</div>
+<h3 class="font-headline-md text-on-surface mb-2">No orders found</h3>
+<p class="text-body-md text-on-surface-variant mb-lg">You haven't placed any medical orders yet.</p>
+<a class="bg-primary text-on-primary px-lg py-3 rounded-xl font-label-md shadow-md" href="#">Browse Pharmacy</a>
+</div>
+<!-- Mocked Order Rows (Will be cleared and replaced by JS) -->
+<div class="order-row bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-sm transition-all flex flex-col md:flex-row items-start md:items-center gap-md">
+<div class="flex-grow grid grid-cols-2 md:grid-cols-4 gap-sm w-full">
+<div>
+<p class="text-label-sm text-on-surface-variant mb-1">ORDER ID</p>
+<p class="font-label-md text-on-surface">#MC-82910</p>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant mb-1">DATE</p>
+<p class="font-label-md text-on-surface">Oct 24, 2023</p>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant mb-1">STATUS</p>
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-primary-container/20 text-primary">
+<span class="w-2 h-2 rounded-full bg-primary mr-2"></span>
+                            Completed
+                        </span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant mb-1">TOTAL PRICE</p>
+<p class="font-label-md text-on-surface">$142.50</p>
+</div>
+</div>
+<div class="flex items-center gap-sm w-full md:w-auto pt-md md:pt-0 border-t md:border-t-0 border-outline-variant md:ml-gutter">
+<button class="flex-1 md:flex-none border border-secondary text-secondary px-4 py-2 rounded-lg font-label-md hover:bg-secondary/5 transition-colors">Details</button>
+<button class="p-2 border border-outline-variant text-on-surface-variant rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+<!-- More rows would appear here -->
+</div>
+</main>
+<!-- Footer Space -->
+<div class="h-24 md:h-0"></div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-20 px-4 pb-safe bg-surface-container dark:bg-surface-container-lowest shadow-[0_-4px_6px_-1px_rgba(59,130,246,0.08)] z-50 rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-tertiary-fixed-variant px-4 py-1 hover:bg-primary-container/10 transition-all" href="#">
+<span class="material-symbols-outlined">local_pharmacy</span>
+<span class="font-label-sm text-label-sm">Pharmacy</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-tertiary-fixed-variant px-4 py-1 hover:bg-primary-container/10 transition-all" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label-sm text-label-sm">Prescriptions</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim bg-primary-container/20 rounded-xl px-4 py-1 scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-sm text-label-sm">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-tertiary-fixed-variant px-4 py-1 hover:bg-primary-container/10 transition-all" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<!-- Order Details Modal -->
+<div class="hidden fixed inset-0 z-[100] flex items-center justify-center p-gutter" id="details-modal">
+<div class="modal-backdrop absolute inset-0"></div>
+<div class="relative bg-surface rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+<div class="p-md bg-surface-container-high flex justify-between items-center border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">medical_information</span>
+<h2 class="font-headline-md text-on-surface">Order Details</h2>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-error-container hover:text-error p-1 rounded-full transition-colors" onclick="closeModal()">close</button>
+</div>
+<div class="p-gutter max-h-[716px] overflow-y-auto">
+<div class="flex flex-col md:flex-row justify-between mb-lg bg-surface-container-low p-md rounded-xl border border-outline-variant gap-md">
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider">Order Reference</p>
+<p class="font-headline-md text-primary" id="modal-order-id">#MC-00000</p>
+</div>
+<div class="text-right">
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider">Placed On</p>
+<p class="font-label-md text-on-surface" id="modal-order-date">-- --- ----</p>
+</div>
+</div>
+<div class="mb-gutter">
+<h3 class="font-label-md text-on-surface mb-md">Prescription &amp; Items</h3>
+<div class="space-y-sm" id="modal-items-list">
+<!-- Items injected here -->
+</div>
+</div>
+<div class="border-t border-outline-variant pt-gutter">
+<div class="flex justify-between items-center mb-2">
+<p class="text-body-md text-on-surface-variant">Subtotal</p>
+<p class="font-label-md text-on-surface" id="modal-subtotal">$0.00</p>
+</div>
+<div class="flex justify-between items-center mb-4">
+<p class="text-body-md text-on-surface-variant">Shipping &amp; Handling</p>
+<p class="font-label-md text-on-surface">FREE</p>
+</div>
+<div class="flex justify-between items-center pt-md border-t border-outline-variant">
+<p class="font-headline-md text-on-surface">Grand Total</p>
+<p class="font-headline-xl text-primary" id="modal-total">$0.00</p>
+</div>
+</div>
+</div>
+<div class="p-md bg-surface-container-low border-t border-outline-variant flex justify-end gap-sm">
+<button class="px-gutter py-2 text-on-surface-variant font-label-md hover:bg-surface-container-high rounded-lg transition-colors" onclick="closeModal()">Close</button>
+<button class="bg-primary text-on-primary px-gutter py-2 rounded-lg font-label-md flex items-center gap-xs shadow-md active:scale-95 transition-all" onclick="printOrderDetails()">
+<span class="material-symbols-outlined text-[20px]">print</span>
+                    Print Details
+                </button>
+</div>
+</div>
+</div>
+<!-- Image for Context/Brand (Background Decor) -->
+<div class="fixed bottom-0 right-0 -z-10 opacity-5 pointer-events-none overflow-hidden h-96 w-96 translate-x-20 translate-y-20">
+<img alt="Pharmacy Background" class="w-full h-full object-cover rounded-full" data-alt="A clean pharmaceutical laboratory setting with high-quality glassware, sterile white surfaces, and bright clinical lighting. The composition is artistic and minimalist, emphasizing professional healthcare reliability and precision. Soft emerald green highlights are visible in the background, creating a calm and professional atmosphere consistent with a modern health service environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC-8LNzKdmy4p_kTyEougCznWO9A7w_qc8ujEhSPzKUDGH7J2qRybAK2KTSn6C8YGPwTnrB4GeE1q77opaHOynwHihnLn4H6fmNHOfCw1Hv2V52eC9DzlpAYbj0ouCIABUc2BUC-4MlBJCZKe0crfB58GevoJC0uttHO0afdwMYgtORiUm9DnP71tJp3CIxCx_lch_LV4OEFWhm8ifFyGs_V_UkXnRF5lQ--C6zWqaj_zPUcvM4bZvXK3FyHSiYajKMG1RlL9T2EM"/>
+</div>
+<script>
+
+// =========================
+// API Configuration
+// =========================
+const API_BASE = 'http://127.0.0.1:8000/api/v1';
+const BEARER_TOKEN = localStorage.getItem("token") || "";
+
+// =========================
+// UI Elements
+// =========================
+const container = document.getElementById('orders-container');
+const loader = document.getElementById('loading-spinner');
+const errorView = document.getElementById('error-message');
+const emptyView = document.getElementById('empty-state');
+const modal = document.getElementById('details-modal');
+
+// =========================
+// FETCH ORDERS
+// =========================
+async function fetchOrders() {
+    try {
+        toggleLoader(true);
+
+        const res = await fetch(`${API_BASE}/orders`, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${BEARER_TOKEN}`
+            }
+        });
+
+        const data = await res.json();
+        console.log(data);
+        console.log("ORDERS:", data);
+
+        if (!data.success) {
+            toggleError(true);
+            return;
+        }
+
+        const orders = data.data?.data ?? data.data ?? [];
+
+        renderOrders(orders);
+
+    } catch (err) {
+        console.error(err);
+        toggleError(true);
+    } finally {
+        toggleLoader(false);
+    }
+}
+
+// =========================
+// RENDER ORDERS
+// =========================
+function renderOrders(orders) {
+
+    if (!orders.length) {
+        emptyView.classList.remove('hidden');
+        return;
+    }
+
+    container.innerHTML = '';
+
+    orders.forEach(order => {
+
+        const formattedDate = order.created_at
+  ? new Date(order.created_at).toLocaleDateString()
+  : '-';
+        const total = parseFloat(order.total_price);
+
+        const row = document.createElement('div');
+
+        row.innerHTML = `
+            <div class="flex-grow grid grid-cols-2 md:grid-cols-4 gap-sm w-full">
+
+                <div>
+                    <p>ORDER ID</p>
+                    <p>${order.id}</p>
+                </div>
+
+                <div>
+                    <p>DATE</p>
+                    <p>${formattedDate}</p>
+                </div>
+
+                <div>
+                    <p>STATUS</p>
+                    <p>${order.status}</p>
+                </div>
+
+                <div>
+                    <p>TOTAL</p>
+                    <p>$${total.toFixed(2)}</p>
+                </div>
+
+            </div>
+
+            <div>
+
+                <button onclick="fetchOrderDetails(${order.id})">
+                    View Details
+                </button>
+
+                <button onclick="downloadReceipt(${order.id})">
+                    Download
+                </button>
+
+            </div>
+        `;
+
+        container.appendChild(row);
+    });
+}
+
+// =========================
+// DOWNLOAD RECEIPT
+// =========================
+async function downloadReceipt(orderId) {
+    try {
+
+        const response = await fetch(`${API_BASE}/orders/${orderId}/receipt`, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${BEARER_TOKEN}`
+            }
+        });
+
+        if (!response.ok) {
+            alert("Failed to download receipt");
+            return;
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `receipt-${orderId}.pdf`;
+
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        window.URL.revokeObjectURL(url);
+
+    } catch (err) {
+        console.error(err);
+        alert("Download error");
+    }
+}
+
+// =========================
+// FETCH ORDER DETAILS
+// =========================
+async function fetchOrderDetails(orderId) {
+    try {
+
+        const res = await fetch(`${API_BASE}/orders/${orderId}`, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${BEARER_TOKEN}`
+            }
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            alert("Failed to load order");
+            return;
+        }
+
+        const order = data.data;
+
+        openModal({
+            id: order.id,
+            date: new Date(order.created_at).toLocaleDateString(),
+            total: parseFloat(order.total_price),
+            items: order.items || []
+        });
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// =========================
+// MODAL
+// =========================
+function openModal(data) {
+
+    document.getElementById('modal-order-id').innerText = data.id;
+    document.getElementById('modal-order-date').innerText = data.date;
+    document.getElementById('modal-total').innerText = `$${data.total.toFixed(2)}`;
+
+    const list = document.getElementById('modal-items-list');
+
+    list.innerHTML = data.items.map(item => `
+        <div>
+            <p>${item.brand_name || 'Item'}</p>
+            <p>${item.quantity}</p>
+        </div>
+    `).join('');
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// =========================
+// PRINT (FIXED)
+// =========================
+
+function printOrderDetails() {
+
+    const modal = document.querySelector('#details-modal .relative');
+
+    if (!modal) return;
+
+    const content = modal.innerHTML;
+
+    const printWindow = window.open('', '', 'width=900,height=700');
+
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Order Details</title>
+                <style>
+                    body { font-family: Arial; padding: 20px; }
+                </style>
+            </head>
+            <body>
+                ${content}
+            </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+}
+
+// =========================
+// HELPERS
+// =========================
+function toggleLoader(show) {
+    loader.classList.toggle('hidden', !show);
+}
+
+function toggleError(show) {
+    errorView.classList.toggle('hidden', !show);
+}
+
+// =========================
+document.addEventListener('DOMContentLoaded', fetchOrders);
+
+</script>
+</body></html>

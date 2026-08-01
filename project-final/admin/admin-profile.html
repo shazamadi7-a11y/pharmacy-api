@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Profile | Pharmy</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    body { font-family: 'Manrope', sans-serif; background: #f7f9fb; }
+    .clinical-shadow { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    #toast {
+        position: fixed; bottom: 2rem; right: 2rem;
+        padding: 1rem 1.5rem; border-radius: 14px;
+        font-weight: 600; font-size: 14px;
+        display: flex; align-items: center; gap: 8px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        transform: translateY(100px); opacity: 0;
+        transition: all 0.3s ease; z-index: 999;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { background: #dcf2e7; color: #006a3f; }
+    #toast.error { background: #ffdad6; color: #ba1a1a; }
+    .skeleton {
+        background: linear-gradient(90deg, #e0e3e5 25%, #f2f4f6 50%, #e0e3e5 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.2s infinite;
+        border-radius: 8px; display: inline-block;
+    }
+    @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+    .avatar-wrapper {
+        position: relative; width: 144px; height: 144px;
+    }
+    .avatar-wrapper img {
+        width: 144px; height: 144px;
+        border-radius: 1.5rem;
+        border: 4px solid white;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        object-fit: cover;
+        background: #e0f2ea;
+    }
+    #avatarUploadBtn {
+        position: absolute; bottom: -8px; right: -8px;
+        width: 36px; height: 36px;
+        background: #006a3f; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        transition: background 0.2s;
+        z-index: 10;
+    }
+    #avatarUploadBtn:hover { background: #005a35; }
+    #avatarInput { display: none; }
+</style>
+</head>
+<body class="bg-[#f7f9fb]">
+
+<div id="toast">
+    <span class="material-symbols-outlined text-[18px]" id="toast-icon">check_circle</span>
+    <span id="toast-msg"></span>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="fixed left-0 top-0 h-screen w-[260px] border-r border-slate-border bg-clinical-white shadow-[4px_0_12px_rgba(0,0,0,0.04)] flex flex-col z-50">
+    <div class="px-6 py-8">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-clinical-white text-2xl" style="font-variation-settings:'FILL' 1;">local_pharmacy</span>
+            </div>
+            <div>
+                <h1 class="font-bold text-primary text-lg">Pharmy</h1>
+                <p class="text-[10px] tracking-widest text-secondary uppercase">Pharmacy Management</p>
+            </div>
+        </div>
+    </div>
+    <nav class="flex-1 px-4 space-y-1">
+        <a class="flex items-center gap-3 px-4 py-3 border-l-4 border-primary bg-success-low-light text-primary font-bold rounded-r-lg" href="admain-dashboard.html">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-medicin.html">
+            <span class="material-symbols-outlined">medication</span><span>Medicines</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-orders.html">
+            <span class="material-symbols-outlined">receipt_long</span><span>Orders</span>
+        </a>
+        <!--
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+            <span class="material-symbols-outlined">notifications</span><span>Notifications</span>
+        </a>-->
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admin-profile.html">
+            <span class="material-symbols-outlined">person</span><span>Profile</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-catagores.html">
+            <span class="material-symbols-outlined">category</span><span>Categories</span>
+        </a>
+    </nav>
+    <div class="p-4 border-t border-slate-border">
+        <a onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-error hover:bg-error-container transition-colors rounded-lg cursor-pointer">
+            <span class="material-symbols-outlined">logout</span><span>Logout</span>
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="ml-[260px] pt-20 p-8 min-h-screen">
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Profile Header -->
+        <div class="relative h-56 rounded-3xl overflow-hidden clinical-shadow mb-16">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#006a3f] to-[#00b36b]"></div>
+            <div class="absolute -bottom-16 left-10 flex items-end gap-6">
+                <div class="avatar-wrapper">
+                    <img id="profileImage" alt="Profile" src="">
+                    <div id="avatarUploadBtn" onclick="document.getElementById('avatarInput').click()" title="Change photo">
+                        <span class="material-symbols-outlined text-white" style="font-size:16px;font-variation-settings:'FILL' 1;">photo_camera</span>
+                    </div>
+                    <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarChange(event)">
+                </div>
+                <div class="mb-6 text-white">
+                    <h1 id="adminName" class="text-4xl font-bold">Loading...</h1>
+                    <p id="adminEmail" class="text-emerald-100 text-lg mt-1"></p>
+                    <span class="inline-block mt-3 px-6 py-1.5 bg-white/30 text-white text-sm font-medium rounded-full">ADMIN</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Account Information -->
+            <div class="lg:col-span-2 bg-white rounded-3xl clinical-shadow p-8">
+                <h3 class="text-2xl font-bold mb-6">Account Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Full Name</label>
+                        <input id="nameInput" type="text" disabled
+                               class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Email</label>
+                        <input id="emailInput" type="email" disabled
+                               class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Phone Number</label>
+                        <input id="phoneInput" type="text" disabled
+                               class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Role</label>
+                        <input id="roleInput" type="text" disabled
+                               class="w-full px-4 py-3 bg-slate-100 border border-slate-300 rounded-2xl text-slate-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="bg-white rounded-3xl clinical-shadow p-8">
+                <h3 class="font-bold text-xl mb-6">Quick Stats</h3>
+                <div class="space-y-5">
+                    <div>
+                        <p class="text-slate-500 text-sm mb-2">Total Orders</p>
+                        <div class="flex items-center gap-2">
+                            <div class="w-9 h-9 bg-emerald-50 rounded-xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[#006a3f] text-[18px]" style="font-variation-settings:'FILL' 1;">receipt_long</span>
+                            </div>
+                            <span id="ordersCount" class="font-bold text-2xl text-slate-800">
+                                <span class="skeleton" style="width:40px;height:28px;">&nbsp;</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-100 pt-5">
+                        <p class="text-slate-500 text-sm mb-2">Total Revenue</p>
+                        <div class="flex items-center gap-2">
+                            <div class="w-9 h-9 bg-emerald-50 rounded-xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[#006a3f] text-[18px]" style="font-variation-settings:'FILL' 1;">payments</span>
+                            </div>
+                            <span id="revenueCount" class="font-bold text-xl text-slate-800">
+                                <span class="skeleton" style="width:80px;height:28px;">&nbsp;</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-100 pt-5">
+                        <p class="text-slate-500 text-sm mb-2">Joined Since</p>
+                        <div class="flex items-center gap-2">
+                            <div class="w-9 h-9 bg-emerald-50 rounded-xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[#006a3f] text-[18px]" style="font-variation-settings:'FILL' 1;">calendar_today</span>
+                            </div>
+                            <span id="joinDate" class="font-medium text-slate-800">---</span>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-100 pt-5">
+                        <p class="text-slate-500 text-sm mb-2">Report Period</p>
+                        <div class="flex items-center gap-2">
+                            <div class="w-9 h-9 bg-emerald-50 rounded-xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[#006a3f] text-[18px]" style="font-variation-settings:'FILL' 1;">date_range</span>
+                            </div>
+                            <span id="reportPeriod" class="text-sm font-medium text-slate-600">This month</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<script>
+const API_BASE = "http://127.0.0.1:8000/api/v1";
+const token = localStorage.getItem("token");
+if (!token) window.location.href = "login.html";
+
+const AVATAR_KEY = "pharmy_admin_avatar";
+
+// صورة افتراضية SVG مدمجة — لا تحتاج إنترنت
+const DEFAULT_AVATAR = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23e0f2ea'/><circle cx='50' cy='38' r='22' fill='%23006a3f'/><ellipse cx='50' cy='85' rx='30' ry='22' fill='%23006a3f'/></svg>`;
+
+function showToast(msg, type = "success") {
+    const toast = document.getElementById("toast");
+    document.getElementById("toast-msg").textContent = msg;
+    document.getElementById("toast-icon").textContent = type === "success" ? "check_circle" : "error";
+    toast.className = `show ${type}`;
+    setTimeout(() => { toast.className = ""; }, 3000);
+}
+
+function handleAvatarChange(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+        showToast("Image too large. Max 5MB.", "error");
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const base64 = e.target.result;
+        document.getElementById("profileImage").src = base64;
+        localStorage.setItem(AVATAR_KEY, base64);
+        showToast("Profile photo updated! ✓", "success");
+    };
+    reader.readAsDataURL(file);
+}
+
+function loadAvatar() {
+    const saved = localStorage.getItem(AVATAR_KEY);
+    document.getElementById("profileImage").src = saved || DEFAULT_AVATAR;
+}
+
+async function fetchProfile() {
+    try {
+        const res = await fetch(`${API_BASE}/me`, {
+            headers: { "Accept": "application/json", "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (result.success) {
+            const u = result.data;
+            document.getElementById("adminName").textContent = u.name || "Admin";
+            document.getElementById("adminEmail").textContent = u.email || "";
+            document.getElementById("roleInput").value = u.role || "admin";
+            document.getElementById("nameInput").value = u.name || "";
+            document.getElementById("emailInput").value = u.email || "";
+            document.getElementById("phoneInput").value = u.phone || "";
+            document.getElementById("joinDate").textContent = new Date(u.created_at).toLocaleDateString();
+        }
+    } catch (err) { console.error("Profile error:", err); }
+}
+
+async function fetchStats() {
+    try {
+        const res = await fetch(`${API_BASE}/admin/reports/sales`, {
+            headers: { "Accept": "application/json", "Authorization": `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (result.success) {
+            const d = result.data;
+            document.getElementById("ordersCount").textContent = d.total_orders ?? "0";
+            const rev = parseFloat(d.total_revenue) || 0;
+            document.getElementById("revenueCount").textContent = `₪ ${rev.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            if (d.period?.from && d.period?.to) {
+                document.getElementById("reportPeriod").textContent =
+                    `${new Date(d.period.from).toLocaleDateString()} → ${new Date(d.period.to).toLocaleDateString()}`;
+            }
+        } else {
+            document.getElementById("ordersCount").textContent = "—";
+            document.getElementById("revenueCount").textContent = "—";
+        }
+    } catch (err) {
+        document.getElementById("ordersCount").textContent = "—";
+        document.getElementById("revenueCount").textContent = "—";
+    }
+}
+
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    loadAvatar();
+    fetchProfile();
+    fetchStats();
+});
+</script>
+</body>
+</html>

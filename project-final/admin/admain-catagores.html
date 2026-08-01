@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Categories Management | Pharmy</title>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#006a3f",
+            "clinical-white": "#FFFFFF",
+            "slate-border": "#E2E8F0",
+            "background": "#f7f9fb",
+            "error-red": "#E11D48"
+          }
+        }
+      }
+    }
+    </script>
+
+    <style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .row-hover:hover { background-color: #f8fafc; }
+        .category-img {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, #006a3f, #00b36b);
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 700;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+
+<!-- SIDEBAR -->
+<aside class="fixed left-0 top-0 h-screen w-[260px] border-r border-slate-border bg-clinical-white shadow-[4px_0_12px_rgba(0,0,0,0.04)] flex flex-col z-50">
+    <div class="px-6 py-8">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-clinical-white text-2xl" style="font-variation-settings:'FILL' 1;">local_pharmacy</span>
+            </div>
+            <div>
+                <h1 class="font-bold text-primary text-lg">Pharmy</h1>
+                <p class="text-[10px] tracking-widest text-secondary uppercase">Pharmacy Management</p>
+            </div>
+        </div>
+    </div>
+    <nav class="flex-1 px-4 space-y-1">
+        <!-- احذفي منه active styles -->
+<a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg"
+   href="admain-dashboard.html">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-medicin.html">
+            <span class="material-symbols-outlined">medication</span><span>Medicines</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-orders.html">
+            <span class="material-symbols-outlined">receipt_long</span><span>Orders</span>
+        </a>
+        <!--
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+            <span class="material-symbols-outlined">notifications</span><span>Notifications</span>
+        </a>-->
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admin-profile.html">
+            <span class="material-symbols-outlined">person</span><span>Profile</span>
+        </a>
+       <a class="flex items-center gap-3 px-4 py-3 border-l-4 border-primary bg-success-low-light text-primary font-bold rounded-r-lg"
+   href="admain-catagores.html">
+    <span class="material-symbols-outlined">category</span>
+    <span>Categories</span>
+</a>
+    </nav>
+    <div class="p-4 border-t border-slate-border">
+        <a onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-error hover:bg-error-container transition-colors rounded-lg cursor-pointer">
+            <span class="material-symbols-outlined">logout</span><span>Logout</span>
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="ml-[260px] min-h-screen">
+    <header class="sticky top-0 z-40 bg-surface/80 backdrop-blur-md px-8 py-4 flex items-center border-b border-slate-border">
+        <div class="flex-1 max-w-xl relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+            <input id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-clinical-white border border-slate-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="Search categories..." type="text">
+        </div>
+    </header>
+
+    <div class="p-8 max-w-[1400px] mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Category Management</h1>
+            <button onclick="openAddModal()" class="bg-primary text-white px-6 py-3 rounded-2xl flex items-center gap-2 hover:bg-primary/90">
+                <span class="material-symbols-outlined">add</span> Add New Category
+            </button>
+        </div>
+
+        <div class="bg-clinical-white rounded-3xl border border-slate-border overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-surface-container-low">
+                    <tr>
+                        <th class="px-6 py-4 text-left">Category</th>
+                        <th class="px-6 py-4 text-left">ID</th>
+                        <th class="px-6 py-4 text-left">Description</th>
+                        <th class="px-6 py-4 text-center">Medicines</th>
+                        <th class="px-6 py-4 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="categories-table" class="divide-y divide-slate-border"></tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- View Modal -->
+<div id="view-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+    <div class="bg-clinical-white w-full max-w-md rounded-3xl p-8">
+        <h2 id="view-name" class="text-2xl font-bold mb-6"></h2>
+        <div class="space-y-4 text-sm">
+            <p><strong>ID:</strong> <span id="view-id"></span></p>
+            <p><strong>Description:</strong> <span id="view-desc"></span></p>
+            <p><strong>Medicines Count:</strong> <span id="view-count" class="font-bold text-green-600"></span></p>
+        </div>
+        <button onclick="closeViewModal()" class="mt-6 w-full py-3 border border-slate-border rounded-2xl font-medium">Close</button>
+    </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="category-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+    <div class="bg-clinical-white w-full max-w-md rounded-3xl p-8">
+        <h2 id="modal-title" class="text-2xl font-bold mb-6">Add New Category</h2>
+        <input type="hidden" id="edit-id">
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-sm font-medium mb-1">Category Name *</label>
+                <input id="cat-name" type="text" class="w-full border border-slate-border rounded-2xl px-4 py-3 focus:border-primary outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Description</label>
+                <textarea id="cat-desc" rows="3" class="w-full border border-slate-border rounded-2xl px-4 py-3 focus:border-primary outline-none"></textarea>
+            </div>
+        </div>
+
+        <div class="flex gap-3 mt-8">
+            <button onclick="closeModal()" class="flex-1 py-3 border border-slate-border rounded-2xl">Cancel</button>
+            <button onclick="saveCategory()" class="flex-1 py-3 bg-primary text-white rounded-2xl">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_BASE = "http://127.0.0.1:8000/api/v1";
+const TOKEN = localStorage.getItem("token");
+
+/*if (!TOKEN) window.location.href = "../login.html";*/
+//const TOKEN = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
+    const USER_ROLE = localStorage.getItem("role");
+if (!TOKEN ||(!USER_ROLE ||USER_ROLE.toLowerCase() !=="admin")) {
+    window.location.href = "/login.html";
+}
+
+let currentEditId = null;
+
+async function fetchCategories() {
+    const tbody = document.getElementById('categories-table');
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12">Loading...</td></tr>`;
+
+    try {
+        const res = await fetch(`${API_BASE}/categories`, {
+            headers: { 'Authorization': `Bearer ${TOKEN}` }
+        });
+        const result = await res.json();
+        renderTable(result.data || []);
+    } catch (e) {
+        console.error(e);
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-red-500">Failed to load categories</td></tr>`;
+    }
+}
+
+function renderTable(categories) {
+    const tbody = document.getElementById('categories-table');
+    tbody.innerHTML = '';
+
+    categories.forEach(cat => {
+        const initial = cat.name.charAt(0).toUpperCase();
+        const tr = document.createElement('tr');
+        tr.className = 'row-hover';
+        tr.innerHTML = `
+            <td class="px-6 py-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-gray-200 rounded-xl flex items-center justify-center font-bold text-gray-700 text-xs text-center">
+    ${cat.name.length > 10 ? cat.name.slice(0, 8) + "..." : cat.name}
+</div>
+                    <span class="font-semibold">${cat.name}</span>
+                </div>
+            </td>
+            <td class="px-6 py-5 font-medium text-gray-600">#${cat.id}</td>
+            <td class="px-6 py-5 text-sm text-gray-600">${cat.description || '-'}</td>
+            <td class="px-6 py-5 text-center">
+                <span class="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm">${cat.medicines_count}</span>
+            </td>
+            <td class="px-6 py-5 text-right space-x-2">
+                <button onclick="viewCategory(${cat.id})" class="p-2 hover:bg-blue-50 text-blue-600 rounded-xl" title="View">
+                    <span class="material-symbols-outlined">visibility</span>
+                </button>
+                <button onclick="editCategory(${cat.id})" class="p-2 hover:bg-amber-50 text-amber-600 rounded-xl" title="Edit">
+                    <span class="material-symbols-outlined">edit</span>
+                </button>
+                <button onclick="deleteCategory(${cat.id}, ${cat.medicines_count})" class="p-2 hover:bg-red-50 text-red-600 rounded-xl" title="Delete">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// View Modal
+async function viewCategory(id) {
+    try {
+        const res = await fetch(`${API_BASE}/categories/${id}`, {
+            headers: { 'Authorization': `Bearer ${TOKEN}` }
+        });
+        const result = await res.json();
+        if (result.success) {
+            const cat = result.data;
+            document.getElementById('view-name').textContent = cat.name;
+            document.getElementById('view-id').textContent = cat.id;
+            document.getElementById('view-desc').textContent = cat.description || 'No description provided';
+            document.getElementById('view-count').textContent = cat.medicines_count + " medicines";
+            document.getElementById('view-modal').classList.remove('hidden');
+        }
+    } catch (e) {
+        alert("Error loading details");
+    }
+}
+
+function closeViewModal() {
+    document.getElementById('view-modal').classList.add('hidden');
+}
+
+// Add Modal
+function openAddModal() {
+    currentEditId = null;
+    document.getElementById('modal-title').textContent = 'Add New Category';
+    document.getElementById('cat-name').value = '';
+    document.getElementById('cat-desc').value = '';
+    document.getElementById('category-modal').classList.remove('hidden');
+}
+
+// Edit
+async function editCategory(id) {
+    currentEditId = id;
+    document.getElementById('modal-title').textContent = 'Edit Category';
+
+    try {
+        const res = await fetch(`${API_BASE}/categories/${id}`, {
+            headers: { 'Authorization': `Bearer ${TOKEN}` }
+        });
+        const result = await res.json();
+        if (result.success) {
+            document.getElementById('cat-name').value = result.data.name;
+            document.getElementById('cat-desc').value = result.data.description || '';
+            document.getElementById('category-modal').classList.remove('hidden');
+        }
+    } catch (e) {
+        alert("Error loading category");
+    }
+}
+
+// Save
+async function saveCategory() {
+    const name = document.getElementById('cat-name').value.trim();
+    const description = document.getElementById('cat-desc').value.trim();
+
+    if (!name) return alert("Category name is required!");
+
+    try {
+        let url = `${API_BASE}/categories`;
+        let method = 'POST';
+
+        const formData = new FormData();
+        formData.append('name', name);
+
+        if (description) {
+            formData.append('description', description);
+        }
+
+        // EDIT MODE
+        if (currentEditId) {
+            url = `${API_BASE}/categories/${currentEditId}`;
+
+            // Laravel fix
+            formData.append('_method', 'PUT');
+        }
+
+        const res = await fetch(url, {
+            method: method,
+            headers: {
+                'Authorization': `Bearer ${TOKEN}`
+            },
+            body: formData
+        });
+       // console.log(await res.text());
+        const result = await res.json();
+
+        console.log(result);
+
+        if (result.success) {
+            alert(currentEditId
+                ? "✅ Category updated successfully!"
+                : "✅ Category added successfully!"
+            );
+
+            closeModal();
+            fetchCategories();
+
+        } else {
+            alert(result.message || "Error saving");
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Connection error. Check console.");
+    }
+}
+function closeModal() {
+    document.getElementById('category-modal').classList.add('hidden');
+}
+
+// Delete
+async function deleteCategory(id, count) {
+    if (count > 0) {
+        if (!confirm(`This category has ${count} medicines.\n\nDelete and move medicines to Uncategorized?`)) return;
+    } else if (!confirm("Delete this category?")) return;
+
+    try {
+        await fetch(`${API_BASE}/categories/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${TOKEN}` }
+        });
+        fetchCategories();
+    } catch (err) {
+        alert("Error deleting category");
+    }
+}
+
+// Search
+document.getElementById('search-input').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('#categories-table tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+    });
+});
+
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "../login.html";
+}
+
+window.onload = fetchCategories;
+</script>
+</body>
+</html>

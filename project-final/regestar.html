@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registration | Clinical Atelier</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-tint": "#046b5e",
+              "secondary-fixed": "#cfe6f2",
+              "secondary-container": "#cfe6f2",
+              "inverse-primary": "#84d5c5",
+              "background": "#f7fafa",
+              "tertiary": "#843f29",
+              "outline": "#6e7a76",
+              "primary-container": "#1f786a",
+              "on-tertiary-container": "#ffe8e2",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#005046",
+              "surface-dim": "#d7dbdb",
+              "on-secondary-fixed": "#071e27",
+              "on-primary-container": "#aafdec",
+              "primary-fixed": "#a0f2e1",
+              "on-tertiary": "#ffffff",
+              "outline-variant": "#bdc9c5",
+              "tertiary-fixed": "#ffdbd1",
+              "on-primary-fixed": "#00201b",
+              "on-error-container": "#93000a",
+              "on-background": "#181c1d",
+              "surface-container-highest": "#e0e3e3",
+              "on-secondary-fixed-variant": "#354a53",
+              "on-tertiary-fixed-variant": "#75331f",
+              "on-primary": "#ffffff",
+              "tertiary-fixed-dim": "#ffb59f",
+              "tertiary-container": "#a2563f",
+              "secondary": "#4c616c",
+              "inverse-on-surface": "#eef1f1",
+              "inverse-surface": "#2d3131",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#526772",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#f7fafa",
+              "primary": "#005e52",
+              "on-surface": "#181c1d",
+              "surface-bright": "#f7fafa",
+              "surface-variant": "#e0e3e3",
+              "error": "#ba1a1a",
+              "surface-container": "#ebeeee",
+              "primary-fixed-dim": "#84d5c5",
+              "secondary-fixed-dim": "#b4cad6",
+              "surface-container-low": "#f1f4f4",
+              "surface-container-high": "#e6e9e9",
+              "on-tertiary-fixed": "#3a0a00",
+              "error-container": "#ffdad6",
+              "on-surface-variant": "#3e4946"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      body { font-family: 'Inter', sans-serif; }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-effect {
+        background: rgba(247, 250, 250, 0.7);
+        backdrop-filter: blur(12px);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen">
+<!-- Notification System -->
+<div class="fixed top-6 right-6 z-50 flex flex-col gap-3 w-80 pointer-events-none" id="notification-container">
+<!-- Success Template (Hidden) -->
+<div class="hidden pointer-events-auto flex items-start gap-3 p-4 bg-primary text-on-primary rounded-lg shadow-xl border-l-4 border-primary-fixed transform transition-all duration-300" id="success-alert">
+<span class="material-symbols-outlined">check_circle</span>
+<div class="flex-1">
+<p class="font-bold text-sm">Account Created</p>
+<p class="text-xs opacity-90">Registration successful. Welcome to Clinical Atelier.</p>
+</div>
+<button class="opacity-70 hover:opacity-100" onclick="this.parentElement.classList.add('hidden')">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<!-- Error Template (Hidden) -->
+<div class="hidden pointer-events-auto flex items-start gap-3 p-4 bg-error text-on-error rounded-lg shadow-xl border-l-4 border-error-container transform transition-all duration-300" id="error-alert">
+<span class="material-symbols-outlined">error</span>
+<div class="flex-1">
+<p class="font-bold text-sm">Action Failed</p>
+<p class="text-xs opacity-90">An error occurred during registration. Please try again.</p>
+</div>
+<button class="opacity-70 hover:opacity-100" onclick="this.parentElement.classList.add('hidden')">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+<main class="flex min-h-screen">
+<!-- Left Side: Editorial Content (Split Screen) -->
+<div class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-primary items-center justify-center p-16">
+<!-- Background Image -->
+<div class="absolute inset-0 z-0">
+<img alt="Pharmaceutical glass bottles and tools" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoEFkAqbtChpUuXpEu5ARJ_1TB_u-Vw92bVYW4YeZ8zlwDBfazno322SEyV_FuDpW9zWMm_xciZgSCOQqNhvkn4GCMsuebCBlHNA7ciu-3ZzFT6rsHz9EQa5IIUtlrrV0bcRX53Bs7mm5EmrqQLM4VnMURv48WW52fANLAhAdffGiWBNCcj7hlmEc2GdkqRWB5es0Ssx4HJ6c00Qty7YTS_TRqcypXdfnmw-MUW_0umtfFk16qpuNA6XyRB-P9FOtyVF3ij-2DoMgf"/>
+</div>
+<!-- Semi-transparent Emerald Overlay -->
+<div class="absolute inset-0 bg-primary/80 mix-blend-multiply z-[1]"></div>
+<div class="absolute inset-0 bg-gradient-to-br from-primary/60 to-primary-container/80 z-[2]"></div>
+<div class="relative z-10 max-w-lg">
+<div class="mb-12">
+<span class="text-primary-fixed font-semibold tracking-widest text-xs uppercase mb-4 block">Clinical Atelier</span>
+<h1 class="text-5xl font-extrabold text-on-primary tracking-tight leading-tight mb-6">
+                    Bespoke healthcare, <br/>digitally refined.
+                </h1>
+<p class="text-on-primary-container text-lg leading-relaxed opacity-90">
+                    Join an exclusive community where medical precision meets personalized care. Manage your prescriptions with pharmaceutical elegance.
+                </p>
+</div>
+<div class="grid grid-cols-2 gap-8">
+<div class="space-y-2">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">verified_user</span>
+<h3 class="text-on-primary font-bold">Secure Access</h3>
+<p class="text-on-primary-container text-sm opacity-80">Encryption that exceeds clinical standards.</p>
+</div>
+<div class="space-y-2">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">clinical_notes</span>
+<h3 class="text-on-primary font-bold">Digital Pharmacy</h3>
+<p class="text-on-primary-container text-sm opacity-80">Automated refills and real-time tracking.</p>
+</div>
+</div>
+</div>
+<!-- Floating Aesthetic Element -->
+<div class="absolute bottom-12 left-16 right-16 z-10">
+<div class="h-px w-full bg-on-primary opacity-10"></div>
+<div class="flex justify-between items-center pt-6">
+<span class="text-on-primary text-xs opacity-60">© 2024 Clinical Atelier System</span>
+<span class="text-on-primary text-xs opacity-60">v4.0.2 Global Pharmacy</span>
+</div>
+</div>
+</div>
+<!-- Right Side: Registration Form -->
+<div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 md:p-20 bg-surface">
+<div class="w-full max-w-md">
+<header class="mb-10">
+<div class="flex items-center gap-2 mb-8 lg:hidden">
+<span class="material-symbols-outlined text-primary text-3xl">medical_services</span>
+<span class="text-xl font-bold tracking-tight text-primary">Clinical Atelier</span>
+</div>
+<h2 class="text-3xl font-extrabold text-on-surface tracking-tight mb-2">Create an account</h2>
+<p class="text-on-surface-variant">Enter your details to begin your clinical journey.</p>
+</header>
+<form class="space-y-5" id="registerForm">
+
+<!-- Full Name -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider px-1">Full Name</label>
+<input id="name" name="name" type="text" required
+class="w-full bg-surface-container-lowest rounded-lg px-4 py-3.5"/>
+</div>
+
+<!-- Email -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider px-1">Email</label>
+<input id="email" name="email" type="email" required
+class="w-full bg-surface-container-lowest rounded-lg px-4 py-3.5"/>
+</div>
+
+<!-- Phone -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider px-1">Phone</label>
+<input id="phone" name="phone" type="text"
+class="w-full bg-surface-container-lowest rounded-lg px-4 py-3.5"/>
+</div>
+
+<!-- Password -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider px-1">Password</label>
+<input id="password" name="password" type="password" required
+class="w-full bg-surface-container-lowest rounded-lg px-4 py-3.5"/>
+</div>
+
+<!-- Confirm Password -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider px-1">Confirm Password</label>
+<input id="password_confirmation" name="password_confirmation" type="password" required
+class="w-full bg-surface-container-lowest rounded-lg px-4 py-3.5"/>
+</div>
+
+<!-- Submit -->
+<div class="pt-4">
+<button type="submit"
+class="w-full bg-primary text-on-primary font-bold py-4 rounded-lg">
+Sign Up
+</button>
+</div>
+
+</form>
+<footer class="mt-10 text-center">
+<p class="text-on-surface-variant text-sm">
+                    Have an account? 
+                    <a class="text-primary font-bold hover:underline ml-1" href="login.html">Sign In</a>
+</p>
+</footer>
+</div>
+</div>
+</main>
+<!-- Background Pattern Decoration -->
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none opacity-[0.03] z-[-1]">
+<svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="40" id="grid" patternunits="userSpaceOnUse" width="40">
+<path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1"></path>
+</pattern>
+</defs>
+<rect fill="url(#grid)" height="100%" width="100%"></rect>
+</svg>
+</div>
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const successAlert = document.getElementById('success-alert');
+    const errorAlert = document.getElementById('error-alert');
+
+    successAlert.classList.add('hidden');
+    errorAlert.classList.add('hidden');
+
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        password: document.getElementById('password').value,
+        password_confirmation: document.getElementById('password_confirmation').value
+    };
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/v1/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+
+        if (response.status === 201 && data.success) {
+            localStorage.setItem("token", data.data.token);
+
+            successAlert.classList.remove('hidden');
+
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+
+        } else if (response.status === 422) {
+            // 🔥 عرض أخطاء Laravel
+            let errors = Object.values(data.errors).flat().join('\n');
+            alert(errors);
+            errorAlert.classList.remove('hidden');
+
+        } else {
+            errorAlert.classList.remove('hidden');
+        }
+
+    } catch (error) {
+        console.error(error);
+        errorAlert.classList.remove('hidden');
+    }
+});
+
+</script>
+</body></html>

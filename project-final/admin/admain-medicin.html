@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Medicines Management | Pharmy</title>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#006a3f",
+            "clinical-white": "#FFFFFF",
+            "slate-border": "#E2E8F0",
+            "background": "#f7f9fb",
+            "error-red": "#E11D48"
+          }
+        }
+      }
+    }
+    </script>
+
+    <style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .row-hover:hover { background-color: #f8fafc; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+
+<!-- SIDEBAR -->
+<aside class="fixed left-0 top-0 h-screen w-[260px] border-r border-slate-border bg-clinical-white shadow-[4px_0_12px_rgba(0,0,0,0.04)] flex flex-col z-50">
+    <div class="px-6 py-8">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-clinical-white text-2xl" style="font-variation-settings:'FILL' 1;">local_pharmacy</span>
+            </div>
+            <div>
+                <h1 class="font-bold text-primary text-lg">Pharmy</h1>
+                <p class="text-[10px] tracking-widest text-secondary uppercase">Pharmacy Management</p>
+            </div>
+        </div>
+    </div>
+    <nav class="flex-1 px-4 space-y-1">
+        <a class="flex items-center gap-3 px-4 py-3 border-l-4 border-primary bg-success-low-light text-primary font-bold rounded-r-lg" href="admain-dashboard.html">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-medicin.html">
+            <span class="material-symbols-outlined">medication</span><span>Medicines</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-orders.html">
+            <span class="material-symbols-outlined">receipt_long</span><span>Orders</span>
+        </a>
+        <!--
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+            <span class="material-symbols-outlined">notifications</span><span>Notifications</span>
+        </a>-->
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admin-profile.html">
+            <span class="material-symbols-outlined">person</span><span>Profile</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-secondary hover:bg-surface-container-low transition-colors rounded-lg" href="admain-catagores.html">
+            <span class="material-symbols-outlined">category</span><span>Categories</span>
+        </a>
+    </nav>
+    <div class="p-4 border-t border-slate-border">
+        <a onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-error hover:bg-error-container transition-colors rounded-lg cursor-pointer">
+            <span class="material-symbols-outlined">logout</span><span>Logout</span>
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="ml-[260px] min-h-screen">
+    <header class="sticky top-0 z-40 bg-surface/80 backdrop-blur-md px-8 py-4 flex items-center border-b border-slate-border">
+        <div class="flex-1 max-w-xl relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+            <input id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-clinical-white border border-slate-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="Search medicines..." type="text">
+        </div>
+    </header>
+
+    <div class="p-8 max-w-[1400px] mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Medicines Management</h1>
+            <button onclick="openAddModal()" class="bg-primary text-white px-6 py-3 rounded-2xl flex items-center gap-2 hover:bg-primary/90">
+                <span class="material-symbols-outlined">add</span> Add New Medicine
+            </button>
+        </div>
+
+       <div class="bg-clinical-white rounded-3xl border border-slate-border overflow-hidden">
+    <table class="w-full min-w-full">
+        <thead class="bg-surface-container-low sticky top-0">
+            <tr>
+                <th class="px-6 py-4 text-left font-semibold">Medicine</th>
+                <th class="px-6 py-4 text-left font-semibold">Category</th>
+                <th class="px-6 py-4 text-center font-semibold">Price</th>
+                <th class="px-6 py-4 text-center font-semibold">Stock</th>
+                <th class="px-6 py-4 text-center font-semibold">Expiry</th>
+                <th class="px-6 py-4 text-center font-semibold">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="medicines-table" class="divide-y divide-slate-border"></tbody>
+    </table>
+</div>
+    </div>
+</main>
+
+<!-- Add/Edit Modal -->
+<div id="medicine-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+    <div class="bg-clinical-white w-full max-w-lg rounded-3xl p-8 max-h-[90vh] overflow-auto">
+        <h2 id="modal-title" class="text-2xl font-bold mb-6">Add New Medicine</h2>
+        <input type="hidden" id="edit-id">
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-sm font-medium mb-1">Category *</label>
+                <select id="med-category" class="w-full border border-slate-border rounded-2xl px-4 py-3 focus:border-primary outline-none"></select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Brand Name *</label>
+                <input id="med-brand" type="text" class="w-full border border-slate-border rounded-2xl px-4 py-3 focus:border-primary outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Scientific Name</label>
+                <input id="med-scientific" type="text" class="w-full border border-slate-border rounded-2xl px-4 py-3 focus:border-primary outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Price *</label>
+                    <input id="med-price" type="number" step="0.01" class="w-full border border-slate-border rounded-2xl px-4 py-3 focus:border-primary outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Stock Quantity *</label>
+                    <input id="med-stock" type="number" class="w-full border border-slate-border rounded-2xl px-4 py-3 focus:border-primary outline-none">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Expiry Date</label>
+                <input id="med-expiry" type="date" class="w-full border border-slate-border rounded-2xl px-4 py-3 focus:border-primary outline-none">
+            </div>
+        </div>
+
+        <div class="flex gap-3 mt-8">
+            <button onclick="closeModal()" class="flex-1 py-3 border border-slate-border rounded-2xl">Cancel</button>
+            <button onclick="saveMedicine()" class="flex-1 py-3 bg-primary text-white rounded-2xl">Save Medicine</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_BASE = "http://127.0.0.1:8000/api/v1";
+const TOKEN = localStorage.getItem("token");
+
+//if (!TOKEN) window.location.href = "../login.html";
+//const TOKEN = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
+    const USER_ROLE = localStorage.getItem("role");
+if (!TOKEN ||(!USER_ROLE ||USER_ROLE.toLowerCase() !=="admin")) {
+    window.location.href = "/login.html";
+}
+let currentEditId = null;
+let medicinesData = [];
+let categoriesData = [];
+
+// Fetch Medicines - محسنة
+/*
+async function fetchMedicines() {
+    const tbody = document.getElementById('medicines-table');
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12">جاري التحميل...</td></tr>`;
+
+    try {
+       // const res = await fetch(`${API_BASE}/medicines?t=${Date.now()}`, {
+       const res = await fetch(`${API_BASE}/medicines?per_page=1000&t=${Date.now()}`, {
+            headers: {
+                'Authorization': `Bearer ${TOKEN}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        const result = await res.json();
+        console.log("🔍 Full API Response:", result);
+
+        // التعامل مع هيكل Laravel Pagination
+        let medicines = [];
+
+        if (Array.isArray(result.data)) {
+            medicines = result.data;
+        } 
+        else if (result.data?.data) {
+            medicines = result.data.data;
+        } 
+        else if (result.data && typeof result.data === 'object') {
+            // إذا كان المصفوفة داخل result.data مباشرة
+            medicines = Object.values(result.data).filter(item => item.id);
+        }
+        else {
+            medicines = [];
+        }
+
+        console.log("✅ FINAL MEDICINES:", medicines);
+        medicinesData = [...medicines];
+        renderTable(medicinesData);
+
+    } catch (e) {
+        console.error("❌ Error fetching medicines:", e);
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-red-500">فشل في تحميل الأدوية: ${e.message}</td></tr>`;
+    }
+}*/
+async function fetchMedicines() {
+    const tbody = document.getElementById('medicines-table');
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10">Loading...</td></tr>`;
+
+    try {
+        const res = await fetch(`${API_BASE}/medicines?per_page=1000&t=${Date.now()}`, {
+            headers: {
+                'Authorization': `Bearer ${TOKEN}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        const result = await res.json();
+
+        console.log("FULL RESPONSE:", result);
+
+        // ⭐ الحل الأساسي هنا
+        const medicines = result?.data?.data ?? [];
+
+        console.log("EXTRACTED:", medicines);
+
+        medicinesData = medicines;
+        renderTable(medicinesData);
+
+    } catch (err) {
+        console.error(err);
+        tbody.innerHTML = `<tr><td class="text-red-500 text-center">Error loading data</td></tr>`;
+    }
+}
+
+// Fetch Categories
+async function fetchCategories() {
+    try {
+        const res = await fetch(`${API_BASE}/categories`, {
+            headers: { 'Authorization': `Bearer ${TOKEN}` }
+        });
+
+        const result = await res.json();
+        categoriesData = result.data?.data || result.data || [];
+        
+        const select = document.getElementById("med-category");
+        if (categoriesData.length === 0) {
+            select.innerHTML = '<option value="">لا توجد تصنيفات - أضف تصنيف أولاً</option>';
+        } else {
+            select.innerHTML = categoriesData.map(cat => `
+                <option value="${cat.id}">
+                    ${cat.name}
+                </option>
+            `).join('');
+        }
+        console.log("📂 Categories loaded:", categoriesData.length);
+    } catch (err) {
+        console.error("Failed to load categories", err);
+        const select = document.getElementById("med-category");
+        select.innerHTML = '<option value="">خطأ في تحميل التصنيفات</option>';
+    }
+}
+
+// Render Table - محسنة
+function renderTable(medicines) {
+    const tbody = document.getElementById('medicines-table');
+    tbody.innerHTML = '';
+
+    console.log(`🎯 renderTable: ${medicines.length} medicines`);
+
+    if (medicines.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-gray-500">لا توجد أدوية - أضف دواء جديد</td></tr>`;
+        return;
+    }
+
+    let html = '';
+    medicines.forEach(med => {
+        const category = categoriesData.find(c => String(c.id) === String(med.category_id));
+        
+        html += `
+            <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;" 
+                class="hover:bg-slate-50">
+                <td style="padding: 20px 24px; font-weight: 600;">${med.brand_name || 'غير محدد'}</td>
+                <td style="padding: 20px 24px;">
+                    ${category ? category.name : `<span style="color:#ef4444;">غير مصنف (${med.category_id})</span>`}
+                </td>
+                <td style="padding: 20px 24px; font-weight: 500;">$${parseFloat(med.price || 0).toFixed(2)}</td>
+                <td style="padding: 20px 24px; text-align: center; font-weight: 600; 
+                           color: ${med.stock_quantity > 10 ? '#16a34a' : med.stock_quantity > 0 ? '#d97706' : '#ef4444'};">
+                    ${med.stock_quantity || 0}
+                </td>
+                <td style="padding: 20px 24px; text-align: center; color: #64748b;">
+                    ${med.expiry_date ? med.expiry_date.split('T')[0] : '-'}
+                </td>
+                <td style="padding: 20px 24px; text-align: center;">
+                    <button onclick="viewMedicine(${med.id})" class="p-2 hover:bg-blue-50 text-blue-600 rounded-xl" title="View">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">visibility</span>
+                    </button>
+                    <button onclick="editMedicine(${med.id})" class="p-2 hover:bg-amber-50 text-amber-600 rounded-xl" title="Edit">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">edit</span>
+                    </button>
+                    <button onclick="deleteMedicine(${med.id})" class="p-2 hover:bg-red-50 text-red-600 rounded-xl" title="Delete">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+    console.log("🏁 Table rendered");
+}
+
+// View Medicine
+function viewMedicine(id) {
+    const med = medicinesData.find(m => m.id === id);
+    if (!med) return alert("Medicine not found");
+
+    alert(`
+📋 Medicine Details:
+━━━━━━━━━━━━━━━━━━━━━
+Brand: ${med.brand_name}
+Scientific: ${med.scientific_name || '-'}
+Category: ${categoriesData.find(c => c.id == med.category_id)?.name || 'Uncategorized'}
+Price: $${med.price}
+Stock: ${med.stock_quantity}
+Expiry: ${med.expiry_date || '-'}
+    `);
+}
+
+// Edit Medicine
+function editMedicine(id) {
+    const med = medicinesData.find(m => m.id == id);
+    if (!med) return;
+
+    currentEditId = id;
+
+    document.getElementById("med-category").value = med.category_id || "";
+    document.getElementById("med-brand").value = med.brand_name || "";
+    document.getElementById("med-scientific").value = med.scientific_name || "";
+    document.getElementById("med-price").value = med.price || "";
+    document.getElementById("med-stock").value = med.stock_quantity || "";
+    document.getElementById("med-expiry").value = med.expiry_date ? med.expiry_date.split("T")[0] : "";
+
+    document.getElementById("modal-title").textContent = "Edit Medicine";
+    document.getElementById("medicine-modal").classList.remove("hidden");
+}
+
+// Open Add Modal
+function openAddModal() {
+    currentEditId = null;
+    // Clear form
+    document.getElementById("med-category").value = "";
+    document.getElementById("med-brand").value = "";
+    document.getElementById("med-scientific").value = "";
+    document.getElementById("med-price").value = "";
+    document.getElementById("med-stock").value = "";
+    document.getElementById("med-expiry").value = "";
+    
+    document.getElementById('modal-title').textContent = 'Add New Medicine';
+    document.getElementById('medicine-modal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('medicine-modal').classList.add('hidden');
+}
+
+// Save Medicine (Add or Update) - محسنة
+
+// استبدل دالة saveMedicine بالكامل بهذه النسخة المعدلة جذرياً
+// استبدل دالة saveMedicine بهذه النسخة
+async function saveMedicine() {
+    const medicineData = {
+        category_id: parseInt(document.getElementById("med-category").value),
+        brand_name: document.getElementById("med-brand").value.trim(),
+        scientific_name: document.getElementById("med-scientific").value.trim(),
+        price: parseFloat(document.getElementById("med-price").value),
+        stock_quantity: parseInt(document.getElementById("med-stock").value),
+        expiry_date: document.getElementById("med-expiry").value,
+        dosage_form: "tablet",
+        requires_prescription: false,
+        is_available: true
+    };
+
+    if (!medicineData.category_id || !medicineData.brand_name || isNaN(medicineData.price) || isNaN(medicineData.stock_quantity)) {
+        alert("الرجاء تعبئة جميع الحقول المطلوبة");
+        return;
+    }
+
+    try {
+        let url = `${API_BASE}/medicines`;
+        let method = "POST";
+        
+        if (currentEditId) {
+            url = `${API_BASE}/medicines/${currentEditId}`;
+            method = "PUT";
+        }
+
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Authorization': `Bearer ${TOKEN}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(medicineData)
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert(currentEditId ? "تم تحديث الدواء بنجاح" : "تم إضافة الدواء بنجاح");
+            closeModal();
+            
+            // IMPORTANT: انتظر ثانيتين ثم أعد التحميل بدون كاش
+            setTimeout(() => {
+                fetchMedicines();
+                // قم بتحديث الصفحة بالكامل كحل مؤقت
+                // location.reload(); // فك تعليق هذا السطر إذا استمرت المشكلة
+            }, 1000);
+            
+        } else {
+            let errorMessage = "فشل في حفظ الدواء\n";
+            if (result.errors) {
+                Object.keys(result.errors).forEach(key => {
+                    errorMessage += `\n${key}: ${result.errors[key].join(', ')}`;
+                });
+            } else if (result.message) {
+                errorMessage += result.message;
+            }
+            alert(errorMessage);
+        }
+
+    } catch (error) {
+        console.error(error);
+        alert("خطأ في الاتصال بالخادم");
+    }
+}
+
+
+// استبدل دالة fetchMedicines بهذه النسخة الأقوى
+/*
+async function fetchMedicines() {
+    const tbody = document.getElementById('medicines-table');
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12">
+        <div class="flex justify-center">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+        <div class="mt-2">جاري التحميل...</div>
+    </td></tr>`;
+
+    try {
+        const res = await fetch(`${API_BASE}/medicines?t=${Date.now()}`, {
+            headers: {
+                'Authorization': `Bearer ${TOKEN}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+
+        const result = await res.json();
+        console.log("🔍 Full API Response:", JSON.stringify(result, null, 2));
+
+        // محاولة استخراج الأدوية بكل الطرق الممكنة
+        let medicines = [];
+        
+        // الحالة 1: result.data مصفوفة
+        if (Array.isArray(result.data)) {
+            medicines = result.data;
+        }
+        // الحالة 2: result.data.data مصفوفة (Laravel pagination)
+        else if (result.data && Array.isArray(result.data.data)) {
+            medicines = result.data.data;
+        }
+        // الحالة 3: result نفسه مصفوفة
+        else if (Array.isArray(result)) {
+            medicines = result;
+        }
+        // الحالة 4: result.data كائن يحتوي على بيانات
+        else if (result.data && typeof result.data === 'object') {
+            // حاول إيجاد أي مصفوفة في الكائن
+            for (let key in result.data) {
+                if (Array.isArray(result.data[key])) {
+                    medicines = result.data[key];
+                    break;
+                }
+            }
+        }
+        
+        // إذا لم نجد شيئاً، جرب البحث في جميع خصائص result
+        if (medicines.length === 0) {
+            for (let key in result) {
+                if (Array.isArray(result[key])) {
+                    medicines = result[key];
+                    console.log(`✅ Found medicines in result.${key}`);
+                    break;
+                }
+            }
+        }
+
+        console.log(`✅ Extracted ${medicines.length} medicines`);
+        
+        if (medicines.length > 0) {
+            console.log("📋 First medicine sample:", medicines[0]);
+        }
+        
+        medicinesData = [...medicines];
+        renderTable(medicinesData);
+
+    } catch (e) {
+        console.error("❌ Error fetching medicines:", e);
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-red-500">
+            ❌ فشل في تحميل الأدوية: ${e.message}<br>
+            <button onclick="fetchMedicines()" class="mt-2 px-4 py-2 bg-primary text-white rounded-lg">
+                إعادة المحاولة
+            </button>
+        </td></tr>`;
+    }
+}*/
+// Delete Medicine
+async function deleteMedicine(id) {
+    if (!confirm("هل أنت متأكد من حذف هذا الدواء؟")) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/medicines/${id}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${TOKEN}`,
+                Accept: "application/json"
+            }
+        });
+
+        const result = await response.json();
+        console.log("DELETE RESULT:", result);
+
+        if (response.ok) {
+            alert("تم حذف الدواء بنجاح");
+            await fetchMedicines(); // تحديث القائمة
+        } else {
+            alert(result.message || "فشل الحذف");
+        }
+
+    } catch (err) {
+        console.error("Delete error:", err);
+        alert("خطأ في الاتصال بالخادم");
+    }
+}
+
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "../login.html";
+}
+
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            if (!searchTerm) {
+                renderTable(medicinesData);
+            } else {
+                const filtered = medicinesData.filter(med => 
+                    med.brand_name?.toLowerCase().includes(searchTerm) ||
+                    med.scientific_name?.toLowerCase().includes(searchTerm)
+                );
+                renderTable(filtered);
+            }
+        });
+    }
+});
+
+// Initialize
+/*
+window.onload = async function () {
+    await fetchCategories();
+    await fetchMedicines();
+};*/
+
+
+// دالة لاختبار الاتصال بالـ API
+
+
+// استدعاء دالة الاختبار عند تحميل الصفحة
+window.onload = async function () {
+    await fetchCategories();
+    await fetchMedicines();
+ //   await testAPIConnection(); // إضافة هذا السطر للتشخيص
+};
+// Force refresh function - أضف هذه الدالة
+
+
+// أضف زر تحديث يدوي بجانب زر الإضافة
+
+</script>
+</body>
+</html>

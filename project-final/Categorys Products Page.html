@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pharmy - المنتجات</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+
+    .product-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+</style>
+</head>
+<body class="bg-[#f8f9ff] text-[#0b1c30] min-h-screen flex flex-col">
+
+<!-- Top Navbar -->
+<header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+    <div class="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
+        <div class="flex items-center gap-4">
+            <button onclick="window.history.back()" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                <span class="material-symbols-outlined text-3xl">arrow_back</span>
+            </button>
+            <div onclick="window.location.href='/'" class="text-2xl font-bold tracking-tighter text-[#2D9F66] cursor-pointer">Pharmy</div>
+        </div>
+        
+        <button id="cart-button" class="relative p-3 hover:bg-gray-100 rounded-xl transition-colors" onclick="window.location.href='cart.html'">
+            <span class="material-symbols-outlined text-3xl">shopping_cart</span>
+            <span id="cart-badge" class="absolute -top-1 -right-1 bg-[#2D9F66] text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+        </button>
+    </div>
+</header>
+
+<main class="pt-24 pb-20 px-6 max-w-7xl mx-auto flex-grow">
+    <!-- Dynamic Category Header -->
+    <div class="mb-10">
+        <h1 id="category-title" class="text-4xl font-bold tracking-tight"></h1>
+        <p id="category-description" class="text-gray-600 mt-3 text-lg"></p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="mb-10 max-w-md">
+        <div class="relative">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+            <input id="product-search" 
+                   type="text" 
+                   placeholder="ابحث عن دواء..." 
+                   class="w-full bg-white border border-gray-200 rounded-2xl py-4 pl-12 pr-5 focus:ring-2 focus:ring-[#2D9F66] outline-none">
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="product-grid">
+        <!-- يتم ملؤه بالجافاسكريبت -->
+    </div>
+</main>
+
+<script>
+// ================== Variables ==================
+let currentProducts = [];
+//let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+// Get Category ID from URL
+const params = new URLSearchParams(window.location.search);
+const categoryId = params.get("id");
+
+// ================== Fetch Category Details ==================
+async function fetchCategoryDetails() {
+    if (!categoryId) return;
+    try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`http://127.0.0.1:8000/api/v1/categories/${categoryId}`, {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        });
+        const data = await res.json();
+        const cat = data.data || data;
+        
+        document.getElementById('category-title').textContent = cat.name || 'المنتجات';
+        document.getElementById('category-description').textContent = cat.description || '';
+    } catch (e) {
+        console.error("Failed to load category details");
+    }
+}
+
+// ================== Fetch Products ==================
+async function fetchProducts() {
+    const grid = document.getElementById('product-grid');
+    const token = localStorage.getItem("token");
+    const USER_ROLE = localStorage.getItem("role");
+if (!token ||(USER_ROLE && USER_ROLE.toLowerCase()=="admin")) {
+    window.location.href = "login.html";
+}
+    /*if (!token) {
+        window.location.href = "login.html";
+        return;
+    }*/
+    if (!categoryId) {
+        grid.innerHTML = `<p class="col-span-full text-center py-12 text-red-500">القسم غير موجود</p>`;
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `http://127.0.0.1:8000/api/v1/medicines?filter[category_id]=${categoryId}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            }
+        );
+
+        const result = await response.json();
+        currentProducts = result.data?.data || [];
+        renderProducts(currentProducts);
+        updateCartBadge();
+    } catch (error) {
+        console.error(error);
+        grid.innerHTML = `<p class="col-span-full text-center py-12 text-red-500">فشل تحميل المنتجات</p>`;
+    }
+}
+
+// ================== Render Products ==================
+function renderProducts(products) {
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = '';
+
+    if (products.length === 0) {
+        grid.innerHTML = `<p class="col-span-full text-center py-12 text-gray-500">لا توجد أدوية في هذا القسم حالياً</p>`;
+        return;
+    }
+
+    products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = `product-card bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl cursor-pointer`;
+
+        const image = product.images?.[0]?.image_path || 'https://via.placeholder.com/300x200?text=No+Image';
+
+        card.innerHTML = `
+            <div class="h-56 bg-gray-100 flex items-center justify-center">
+    <span class="text-4xl font-bold text-gray-700 text-center px-4">
+        ${product.brand_name}
+    </span>
+</div>
+            <div class="p-5">
+                <h3 class="font-semibold text-lg mb-1 line-clamp-2">${product.brand_name}</h3>
+                <p class="text-gray-500 text-sm line-clamp-2 mb-4">${product.scientific_name || ''}</p>
+                
+                <div class="flex items-center justify-between">
+                    <span class="text-2xl font-bold text-[#2D9F66]">${product.price} ₪</span>
+                    <button onclick="event.stopImmediatePropagation(); addToCart(${product.id}, '${product.brand_name.replace(/'/g, "\\'")}');" 
+                            class="bg-[#2D9F66] hover:bg-[#24855a] text-white px-5 py-3 rounded-2xl flex items-center gap-2 text-sm">
+                        <span class="material-symbols-outlined">add_shopping_cart</span>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Open details page when clicking the card
+        card.addEventListener('click', () => {
+            window.location.href = `MedicineDetails.html?id=${product.id}`;
+        });
+
+        grid.appendChild(card);
+    });
+}
+
+// ================== Live Search ==================
+document.getElementById('product-search').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase().trim();
+    if (!term) {
+        renderProducts(currentProducts);
+        return;
+    }
+    const filtered = currentProducts.filter(p => 
+        (p.brand_name && p.brand_name.toLowerCase().includes(term)) ||
+        (p.scientific_name && p.scientific_name.toLowerCase().includes(term))
+    );
+    renderProducts(filtered);
+});
+
+// ================== Cart Functions ==================
+async function addToCart(id, name) {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/v1/cart", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                medicine_id: id,
+                quantity: 1
+            })
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+
+        if (!response.ok || !data.success) {
+            alert(data.message || "فشل إضافة المنتج");
+            return;
+        }
+
+        // تحديث البادج
+        updateCartBadge();
+
+        // Notification
+        const notif = document.createElement("div");
+
+        notif.className =
+            "fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#2D9F66] text-white px-8 py-4 rounded-3xl shadow-xl z-50";
+
+        notif.textContent = `تم إضافة ${name} إلى السلة`;
+
+        document.body.appendChild(notif);
+
+        setTimeout(() => {
+            notif.remove();
+        }, 2200);
+
+    } catch (error) {
+        console.error("Add To Cart Error:", error);
+        alert("حدث خطأ أثناء الإضافة");
+    }
+}
+
+async function updateCartBadge() {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/v1/cart", {
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            document.getElementById("cart-badge").textContent =
+                data.data.items_count || 0;
+        }
+
+    } catch (error) {
+        console.error("Cart Badge Error:", error);
+    }
+}
+
+// ================== Initialize ==================
+window.addEventListener('DOMContentLoaded', () => {
+    fetchCategoryDetails();
+    fetchProducts();
+    updateCartBadge();
+});
+</script>
+</body>
+</html>

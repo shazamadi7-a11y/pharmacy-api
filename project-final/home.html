@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clinical Sanctuary | Pharmy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f3f4f5",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-secondary-fixed-variant": "#284e37",
+                        "tertiary-container": "#bb535e",
+                        "surface-tint": "#006d40",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#8cf8b7",
+                        "surface-container": "#edeeef",
+                        "primary-fixed-dim": "#6fdb9c",
+                        "on-tertiary-fixed": "#40000e",
+                        "tertiary": "#9c3b47",
+                        "primary": "#006a3f",
+                        "on-tertiary-fixed-variant": "#802633",
+                        "outline": "#6e7a70",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "secondary": "#40674e",
+                        "on-secondary-container": "#466d54",
+                        "on-background": "#191c1d",
+                        "secondary-fixed": "#c2edcd",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#f6fff5",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed": "#002110",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#191c1d",
+                        "inverse-on-surface": "#f0f1f2",
+                        "outline-variant": "#bdcabe",
+                        "on-primary-fixed-variant": "#00522f",
+                        "secondary-fixed-dim": "#a6d0b2",
+                        "inverse-surface": "#2e3132",
+                        "background": "#f8f9fa",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#3e4a41",
+                        "surface": "#f8f9fa",
+                        "secondary-container": "#c2edcd",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#6fdb9c",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-primary-fixed": "#002110",
+                        "primary-container": "#008650",
+                        "on-tertiary-container": "#fffbff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "display": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0 8px 32px rgba(25, 28, 29, 0.04);
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(24px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar (Shared) -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm shadow-emerald-900/5 font-['Manrope'] antialiased tracking-tight">
+<div class="flex justify-between items-center px-6 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-extrabold tracking-tighter text-[#2D9F66] dark:text-[#38c47e]">Pharmy</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#2D9F66] font-bold border-b-2 border-[#2D9F66] pb-1" href="#">Shop</a>
+<a class="text-zinc-600 dark:text-zinc-400 font-medium hover:text-[#2D9F66] transition-colors" href="Category.html">Categories</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50 rounded-lg transition-all scale-95 active:scale-90 duration-200" onclick="window.location.href='cart.html'">
+
+    <span class="material-symbols-outlined">shopping_cart</span>
+
+    <!-- badge -->
+    <span id="cart-count"
+          class="absolute -top-1 -right-1 w-4 h-4 bg-primary text-[10px] text-white flex items-center justify-center rounded-full font-bold">
+        0
+    </span>
+
+</button>
+<button class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50 rounded-lg transition-all scale-95 active:scale-90 duration-200" onclick="window.location.href='profil.html'" >
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Search Section -->
+<section class="bg-surface-container-low py-12 px-8">
+<div class="max-w-4xl mx-auto text-center space-y-6">
+<div class="relative group">
+<input class="w-full h-16 pl-14 pr-6 bg-surface-container-lowest border-none rounded-full text-lg shadow-sm focus:ring-4 focus:ring-primary-fixed transition-all duration-300 outline-none scale-100 focus:scale-[1.02]" id="main-search" placeholder="Search by scientific name (Paracetamol) or brand (Panadol)..." type="text"/>
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+</div>
+</div>
+</section>
+<!-- Hero Section -->
+<section class="relative h-[600px] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover brightness-75" data-alt="clean modern pharmacy interior with minimalist white shelving neat rows of medicines and warm ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSBmrrO62q8xvdXV1_5L4mCJQterqSWsekNALZdSNb1JnWVTnROKfxBKe08pMKTfRJzfX8cCxsePuz4ab8juN1sMsQMLhOyMnZjmpFDTrt1Og9GRGEZvXH-WqhqV7wpZyCw_xq6KzAZq7uI3OfPq2q0HOeh7BD1GGGicUw0Owwny3jz5HSuZ3qlWMyF05juqOKrfuDjzuCGPutjW0T3fT3ak6XxnQ2zigWNnH_sLYoTjdedMbx6qayIvdKuIs0xNAZgELySiU1AA"/>
+<div class="absolute inset-0 bg-gradient-to-r from-primary/60 to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-[1440px] mx-auto px-8 w-full">
+<div class="max-w-2xl space-y-8">
+<h1 class="text-6xl font-extrabold text-white leading-tight tracking-tight">
+                        Find Your <span class="text-primary-fixed">Medicine</span> Easily
+                    </h1>
+<p class="text-xl text-white/90 font-medium leading-relaxed max-w-lg">
+                        Access high-quality healthcare products with transparent pricing and professional pharmacist support.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Widgets: Health Tip & Order Update -->
+<section class="max-w-[1440px] mx-auto px-8 -mt-16 relative z-20">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="bg-surface-container-lowest p-8 rounded-xl editorial-shadow flex items-center gap-6 group hover:bg-surface-container transition-colors">
+<div class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-3xl" data-icon="lightbulb">lightbulb</span>
+</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Health Tip of the Day</h3>
+<p class="text-on-surface-variant text-sm">Stay hydrated! Drinking 2L of water daily helps maintain kidney function and healthy skin.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-8 rounded-xl editorial-shadow flex items-center gap-6 group hover:bg-surface-container transition-colors">
+<div class="w-16 h-16 bg-secondary-container rounded-full flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-3xl" data-icon="local_shipping">local_shipping</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-bold text-lg mb-1">Order #8821 Status</h3>
+<p class="text-on-surface-variant text-sm">Out for delivery. Estimated arrival: 15 mins</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Categories Section -->
+<section class="max-w-[1440px] mx-auto px-8 py-24">
+<h2 class="text-4xl font-extrabold mb-12 tracking-tight">Browse by Category</h2>
+<div id="categories-grid" class="grid grid-cols-2 md:grid-cols-4 gap-8">
+
+</div>
+</section>
+<!-- Offers Banner -->
+<section class="px-8 pb-24">
+<div class="max-w-[1440px] mx-auto bg-primary-container rounded-3xl p-12 overflow-hidden relative group">
+<div class="absolute right-0 top-0 h-full w-1/3 bg-white/5 skew-x-12 translate-x-12"></div>
+<div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="space-y-4 text-center md:text-left">
+<span class="px-4 py-1 bg-primary-fixed text-on-primary-fixed rounded-full text-xs font-bold tracking-widest uppercase">Special Offer</span>
+<h2 class="text-5xl font-black text-on-primary-container tracking-tighter">Save 20% on all vitamins</h2>
+<p class="text-on-primary-container/80 text-xl font-medium">Boost your immunity this winter with our premium range.</p>
+</div>
+<button class="px-10 py-5 bg-white text-primary font-bold rounded-full hover:bg-surface-container-lowest transition-all active:scale-95 shadow-xl" onclick="window.location.href='Categorys Products Page.html?id=3'">
+                        Shop Collection
+                    </button>
+</div>
+</div>
+</section>
+<!-- Popular Medicines -->
+<section class="max-w-[1440px] mx-auto px-8 pb-24">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="text-4xl font-extrabold tracking-tight">Popular Medicines</h2>
+<p class="text-on-surface-variant mt-2">Trusted solutions for your everyday needs</p>
+</div>
+<button class="text-primary font-bold hover:underline" onclick="window.location.href='Category.html'">View All</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="medicine-grid">
+<!--هان هحط الادوية من ال api-->
+</div>
+</section>
+</main>
+<!-- Footer (Shared) -->
+<footer class="bg-zinc-50 dark:bg-zinc-950 w-full py-12 font-['Inter'] text-sm">
+<div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="text-lg font-bold text-zinc-900 dark:text-white">Pharmy</div>
+<div class="flex gap-8">
+<a class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity hover:opacity-80" href="home.html">Shop</a>
+<a class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity hover:opacity-80" href="Category.html">Category</a>
+<a class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity hover:opacity-80" href="cart.html">cart</a>
+<a class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity hover:opacity-80" href="profil.html">profil</a>
+</div>
+<div class="text-zinc-500 dark:text-zinc-400">
+© 2026 Pharmy. All rights reserved.
+</div>
+</div>
+</footer>
+<script src="nav.js"></script>
+<script>
+
+// ==============================
+// 🔧 إعدادات
+// ==============================
+const API_BASE_URL = "http://127.0.0.1:8000/api/v1";
+const AUTH_TOKEN = localStorage.getItem("token");
+const USER_ROLE = localStorage.getItem("role");
+if (!AUTH_TOKEN ||(USER_ROLE && USER_ROLE.toLowerCase()=="admin")) {
+    window.location.href = "login.html";
+}
+
+
+// ==============================
+// 📦 تحميل الأقسام
+// ==============================
+async function loadCategories() {
+    const container = document.getElementById("categories-grid");
+
+    if (!container) return;
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/categories`, {
+            headers: {
+                "Authorization": `Bearer ${AUTH_TOKEN}`,
+                "Accept": "application/json"
+            }
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+       data.data.forEach(cat => {
+    container.innerHTML += `
+        <div 
+            class="group bg-surface-container-low rounded-3xl p-6 cursor-pointer text-center hover:bg-primary-fixed/20 transition"
+                        onclick="window.location.href='Categorys Products Page.html?id=${cat.id}'">
+
+            <div class="font-bold text-lg">${cat.name}</div>
+        </div>
+    `;
+});
+            
+        }
+
+    } catch (err) {
+        console.error("خطأ في جلب الأقسام:", err);
+    }
+}
+
+
+// ==============================
+// 💊 تحميل الأدوية
+// ==============================
+// ==============================
+// 💊 جلب وعرض الأدوية
+// ==============================
+async function loadMedicines(categoryId = "") {
+    const container = document.getElementById('medicine-grid');
+    if (!container) return;
+
+    try {
+        let url = `${API_BASE_URL}/medicines`;
+
+        if (categoryId) {
+            url += `?filter[category_id]=${categoryId}`;
+        }
+
+        const response = await fetch(url, {
+            headers: {
+                "Authorization": `Bearer ${AUTH_TOKEN}`,
+                "Accept": "application/json"
+            }
+        });
+
+        const result = await response.json();
+
+        console.log("Medicines API response:", result);
+
+        container.innerHTML = "";
+
+        // ✅ صح 100%
+        const medicines = result.data?.data || [];
+
+        if (medicines.length === 0) {
+            container.innerHTML = `<p class="text-center">لا يوجد أدوية</p>`;
+            return;
+        }
+
+        // 🔥 خذ فقط أول 6 (للهوم)
+        const limited = medicines.slice(0, 6);
+
+        let html = "";
+
+        limited.forEach(med => {
+            html += `
+                <div class="bg-surface-container-lowest p-6 rounded-3xl">
+                    <h3 class="font-bold text-xl">${med.brand_name ?? "No Name"}</h3>
+                    <p class="text-primary font-bold">₪ ${med.price ?? "0"}</p>
+
+                    <button 
+                        class="mt-3 w-full py-2 bg-primary text-white rounded-full"
+                        onclick="addToCart(${med.id}, 1)">
+                        Add to Cart
+                    </button>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error("Medicines error:", err);
+    }
+}
+
+// ==============================
+// 🛒 نظام السلة (Cart System)
+// ==============================
+/*
+let cart = JSON.parse(localStorage.getItem('pharmy_cart')) || [];
+
+function addToCart(id, name, price) {
+    const existingItem = cart.find(item => item.id === id);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({ id, name, price, quantity: 1 });
+    }
+    saveCart();
+    alert(`تمت إضافة ${name} إلى السلة بنجاح! ✅`);
+}
+
+function saveCart() {
+    localStorage.setItem('pharmy_cart', JSON.stringify(cart));
+    updateCartCount();
+}
+
+function updateCartCount() {
+    const countElement = document.getElementById('cart-count');
+    if (countElement) {
+        const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+        countElement.innerText = total;
+    }
+}*/
+async function addToCart(medicine_id, quantity = 1) {
+    try {
+        const res = await fetch(`${API_BASE_URL}/cart`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${AUTH_TOKEN}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                medicine_id: medicine_id,
+                quantity: quantity
+            })
+        });
+
+        const data = await res.json();
+
+        console.log("Cart Response:", data);
+
+        if (data.success) {
+            alert("تمت الإضافة إلى السلة بنجاح ✅");
+          await updateCartCount(); // اختياري
+        } else {
+            alert("فشل الإضافة ❌");
+        }
+
+    } catch (err) {
+        console.error("Cart Error:", err);
+    }
+}
+/*async function updateCartCountFromAPI() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/cart`, {
+            headers: {
+                "Authorization": `Bearer ${AUTH_TOKEN}`,
+                "Accept": "application/json"
+            }
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            const count = data.data.items_count;
+
+            const countElement = document.getElementById("cart-count");
+            if (countElement) {
+                countElement.innerText = count;
+            }
+        }
+
+    } catch (err) {
+        console.error(err);
+    }
+}*/
+
+// ==============================
+// 🚀 تشغيل الوظائف عند التحميل
+// ==============================
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadCategories(); // جلب التصنيفات
+    loadMedicines();  // جلب الأدوية
+   /* updateCartCount(); */// تحديث رقم السلة
+    //updateCartCountFromAPI();
+    
+    const searchInput = document.getElementById("main-search");
+
+    if (!searchInput) return;
+
+    searchInput.addEventListener("input", async function () {
+        let query = this.value.trim();
+
+        const container = document.getElementById("medicine-grid");
+
+        if (query.length === 0) {
+            loadMedicines(); // يرجع الهوم الطبيعي
+            return;
+        }
+
+        try {
+            const res = await fetch(
+                `${API_BASE_URL}/medicines?filter[search]=${query}`,
+                {
+                    headers: {
+                        "Authorization": `Bearer ${AUTH_TOKEN}`,
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+            const result = await res.json();
+
+            container.innerHTML = "";
+
+            const medicines = result.data?.data || [];
+
+            if (medicines.length === 0) {
+                container.innerHTML = `<p class="text-center">No medicines found</p>`;
+                return;
+            }
+
+            medicines.forEach(med => {
+                container.innerHTML += `
+                    <div class="bg-surface-container-lowest p-6 rounded-3xl">
+                        <h3 class="font-bold text-xl">${med.brand_name}</h3>
+                        <p class="text-primary font-bold">₪ ${med.price}</p>
+
+                        <button class="mt-3 w-full py-2 bg-primary text-white rounded-full"
+                            onclick="addToCart(${med.id},1)">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+            });
+
+        } catch (err) {
+            console.error("Search error:", err);
+        }
+    });
+});
+/*
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("main-search");
+
+    if (!searchInput) return;
+
+    searchInput.addEventListener("input", async function () {
+        let query = this.value.trim();
+
+        const container = document.getElementById("medicine-grid");
+
+        if (query.length === 0) {
+            loadMedicines(); // يرجع الهوم الطبيعي
+            return;
+        }
+
+        try {
+            const res = await fetch(
+                `${API_BASE_URL}/medicines?filter[search]=${query}`,
+                {
+                    headers: {
+                        "Authorization": `Bearer ${AUTH_TOKEN}`,
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+            const result = await res.json();
+
+            container.innerHTML = "";
+
+            const medicines = result.data?.data || [];
+
+            if (medicines.length === 0) {
+                container.innerHTML = `<p class="text-center">No medicines found</p>`;
+                return;
+            }
+
+            medicines.forEach(med => {
+                container.innerHTML += `
+                    <div class="bg-surface-container-lowest p-6 rounded-3xl">
+                        <h3 class="font-bold text-xl">${med.brand_name}</h3>
+                        <p class="text-primary font-bold">₪ ${med.price}</p>
+
+                        <button class="mt-3 w-full py-2 bg-primary text-white rounded-full"
+                            onclick="addToCart(${med.id},1)">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+            });
+
+        } catch (err) {
+            console.error("Search error:", err);
+        }
+    });
+});*/
+</script></body></html>

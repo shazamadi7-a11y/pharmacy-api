@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html dir="ltr" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MyPharmacy Categories | Comprehensive Medical Care</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Public+Sans:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed": "#6ffbbe",
+                      "surface-container-high": "#dce9ff",
+                      "surface": "#f8f9ff",
+                      "surface-container-lowest": "#ffffff",
+                      "primary": "#006c49",
+                      "primary-container": "#10b981",
+                      "primary-fixed-dim": "#4edea3",
+                      "on-surface-variant": "#3c4a42",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#004395",
+                      "inverse-primary": "#4edea3",
+                      "inverse-surface": "#213145",
+                      "background": "#f8f9ff",
+                      "tertiary-fixed-dim": "#c4c7c9",
+                      "surface-dim": "#cbdbf5",
+                      "on-secondary-container": "#fefcff",
+                      "surface-container-highest": "#d3e4fe",
+                      "surface-bright": "#f8f9ff",
+                      "surface-container-low": "#eff4ff",
+                      "on-surface": "#0b1c30",
+                      "on-tertiary-fixed-variant": "#444749",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#006c49",
+                      "on-background": "#0b1c30",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed": "#e0e3e5",
+                      "on-tertiary-fixed": "#191c1e",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-container": "#36393b",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "surface-variant": "#d3e4fe",
+                      "secondary-container": "#2170e4",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed": "#002113",
+                      "on-primary-fixed-variant": "#005236",
+                      "on-primary-container": "#00422b",
+                      "tertiary": "#5c5f61",
+                      "secondary": "#0058be",
+                      "on-secondary-fixed": "#001a42",
+                      "outline": "#6c7a71",
+                      "surface-container": "#e5eeff",
+                      "error": "#ba1a1a",
+                      "outline-variant": "#bbcabf",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-container": "#a0a3a5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "40px",
+                      "margin": "32px",
+                      "base": "8px",
+                      "gutter": "24px",
+                      "sm": "12px",
+                      "xs": "4px",
+                      "md": "24px",
+                      "xl": "64px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Manrope"],
+                      "label-sm": ["Public Sans"],
+                      "body-md": ["Manrope"],
+                      "headline-xl": ["Manrope"],
+                      "label-md": ["Public Sans"],
+                      "headline-md": ["Manrope"],
+                      "headline-lg": ["Manrope"]
+              },
+              "fontSize": {
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-xl": ["40px", {"lineHeight": "52px", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "44px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .category-card:hover .category-image {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+ <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm shadow-emerald-900/5 font-['Manrope'] antialiased tracking-tight">
+<div class="flex justify-between items-center px-6 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-extrabold tracking-tighter text-[#2D9F66] dark:text-[#38c47e]">Pharmy</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#2D9F66] font-bold border-b-2 border-[#2D9F66] pb-1" href="home.html">Shop</a>
+<a class="text-zinc-600 dark:text-zinc-400 font-medium hover:text-[#2D9F66] transition-colors" href="Category.html">Categories</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50 rounded-lg transition-all scale-95 active:scale-90 duration-200" onclick="window.location.href='cart.html'">
+
+    <span class="material-symbols-outlined">shopping_cart</span>
+
+    <!-- badge -->
+    <span id="cart-count"
+          class="absolute -top-1 -right-1 w-4 h-4 bg-primary text-[10px] text-white flex items-center justify-center rounded-full font-bold">
+        0
+    </span>
+
+</button>
+<button class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50 rounded-lg transition-all scale-95 active:scale-90 duration-200" onclick="window.location.href='profile.html'" >
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative h-[320px] flex items-center overflow-hidden bg-primary">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-20" data-alt="A clean and professional pharmaceutical laboratory setting with soft focus medical equipment in the background. The lighting is bright and clinical, using a palette of Medical Green and white to evoke a sense of trust and purity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8WMFlLjUVDs5JG7vWU0TaUI5LpCXB0B0tRXjqO_tLvs6t1uOGRddCIm7iJ-p2gI0lUyXkCS2qh6EIRf37KepVH-emP5bOTRTUcQWS3t_UIDZP7qLKsqZ1ptluBx35X9RpuXRr95aQBC_X6TCdUGPVrsysM91vDu-N9YKIWvgLASuBR4PIPTD0U03mh-jmrcNMAWhDnfh9oXvYlx_7-rdtNtQx6Nd_guE2kbpsglb8VoIv4pnBpdrnI8iCUx68DKU_wyz_GLwZ6Ic"/>
+</div>
+<div class="container mx-auto px-margin relative z-10">
+<div class="max-w-2xl">
+<h1 class="font-headline-xl text-headline-xl text-on-primary mb-md">Browse Medical Categories</h1>
+<p class="font-body-lg text-body-lg text-primary-fixed opacity-90">Discover our wide range of medicines and medical supplies carefully classified to meet all your health needs.</p>
+</div>
+</div>
+</section>
+<!-- Categories Content -->
+<section class="py-xl container mx-auto px-margin">
+<div class="flex justify-between items-center mb-xl">
+<div class="flex flex-col gap-xs">
+<h2 class="font-headline-md text-headline-md text-on-surface">Available Categories</h2>
+<div class="w-16 h-1 bg-primary-container rounded-full"></div>
+</div>
+
+</div>
+<!-- Category Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter" id="categories-grid">
+<!-- Skeleton Loading State -->
+<div class="animate-pulse bg-surface-container-low h-64 rounded-xl"></div>
+<div class="animate-pulse bg-surface-container-low h-64 rounded-xl"></div>
+<div class="animate-pulse bg-surface-container-low h-64 rounded-xl"></div>
+<div class="animate-pulse bg-surface-container-low h-64 rounded-xl"></div>
+</div>
+</section>
+</main>
+<script src="nav.js"></script>
+<script>
+async function renderCategories() {
+    const grid = document.getElementById('categories-grid');
+
+    // 🔐 جيبي التوكن
+    const AUTH_TOKEN = localStorage.getItem("token");
+    const USER_ROLE = localStorage.getItem("role");
+if (!AUTH_TOKEN ||(USER_ROLE && USER_ROLE.toLowerCase()=="admin")) {
+    window.location.href = "login.html";
+}
+
+    // ❗ لو ما في توكن → رجعيه للوقن
+    /*if (!AUTH_TOKEN) {
+        window.location.href = "login.html";
+        return;
+    }*/
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/v1/categories', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${AUTH_TOKEN}`
+            }
+        });
+
+        const result = await response.json();
+        console.log(result);
+        const categories = result.data || [];
+
+        if (categories.length === 0) {
+            grid.innerHTML = '<p class="text-on-surface-variant font-body-lg col-span-full text-center py-xl">No categories found.</p>';
+            return;
+        }
+
+        grid.innerHTML = '';
+
+        categories.forEach(cat => {
+            const card = document.createElement('div');
+            card.className = 'category-card group bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col cursor-pointer';
+            card.onclick = () => {
+    window.location.href = `Categorys Products Page.html?id=${cat.id}`;
+};
+            /*const imgUrl = cat.image
+  ? cat.image
+  : `https://ui-avatars.com/api/?name=${encodeURIComponent(cat.name)}&background=374151`;*/
+            const imgUrl = (cat.image && cat.image.trim() !== "")
+  ? cat.image
+  : `https://placehold.co/400x400/374151/ffffff?text=${encodeURIComponent(cat.name)}`;
+            const productCount = cat.medicines_count || 0;
+
+            card.innerHTML = `
+                <div class="relative h-48 overflow-hidden">
+                    <img src="${imgUrl}" 
+                         class="category-image w-full h-full object-cover transition-transform duration-500"
+                         alt="${cat.name}">
+                    <div class="absolute top-4 right-4">
+                        <span class="bg-primary-container text-on-primary-container px-sm py-1 rounded-full font-label-sm shadow-sm">
+                            ${productCount} Products
+                        </span>
+                    </div>
+                </div>
+                <div class="p-md flex flex-col flex-grow">
+                    <h3 class="font-headline-md text-on-surface mb-xs group-hover:text-primary transition-colors">${cat.name}</h3>
+                    <p class="text-on-surface-variant font-body-md line-clamp-2 mb-md flex-grow">${cat.description || ''}</p>
+                   
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        grid.innerHTML = '<p class="text-error font-body-lg col-span-full text-center py-xl">Failed to load categories. Please try again later.</p>';
+    }
+    
+}
+
+window.addEventListener('DOMContentLoaded', renderCategories);
+</script>
+</body></html>
